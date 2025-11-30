@@ -1,0 +1,54 @@
+$color-primario: #3a7569
+$fuente-principal: 'Inter', sans-serif
+
+.markdown-view
+  padding: 10px
+  border-radius: 4px
+  line-height: 1.6
+  
+  h1
+    letter-spacing: 0.7px
+    padding-bottom: 50px
+
+
+  h2
+    border-bottom: 2px solid $color-primario
+    padding-bottom: 5px
+    margin-top: 30px
+    margin-bottom: 20px
+    letter-spacing: 3px
+
+
+  a
+    color: $color-primario
+    text-decoration: none
+
+    &:hover
+      text-decoration: underline
+  p
+    margin-bottom: 15px
+    font-size: 1em
+    letter-spacing: 0.9px
+
+  .metadata-container
+    font-family: $fuente-principal
+    font-size: 0.95em
+    margin: 20px
+    padding: 30px
+    border: 1px solid rgba($color-primario, 0.7)
+    border-radius: 4px
+    background-color: rgba($color-primario, 0.1)
+    .metadata-item
+      margin-bottom: 8px
+
+      span.label
+        font-weight: bold
+
+      span.value
+        margin-left: 5px
+  span
+    letter-spacing: 0.9px
+
+        
+.lastlinemetadata
+  line-height: 1.4!important
