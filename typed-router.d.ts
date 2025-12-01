@@ -30,18 +30,11 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
-    '/1': RouteRecordInfo<
-      '/1',
-      '/1',
-      Record<never, never>,
-      Record<never, never>,
-      | never
-    >,
-    '/2': RouteRecordInfo<
-      '/2',
-      '/2',
-      Record<never, never>,
-      Record<never, never>,
+    '/articles/[year]/[slug]': RouteRecordInfo<
+      '/articles/[year]/[slug]',
+      '/articles/:year/:slug',
+      { year: ParamValue<true>, slug: ParamValue<true> },
+      { year: ParamValue<false>, slug: ParamValue<false> },
       | never
     >,
   }
@@ -57,21 +50,15 @@ declare module 'vue-router/auto-routes' {
    * @internal
    */
   export interface _RouteFileInfoMap {
-    'src/pages/index.md': {
+    'src/pages/index.vue': {
       routes:
         | '/'
       views:
         | never
     }
-    'src/pages/1.md': {
+    'src/pages/articles/[year]/[slug].vue': {
       routes:
-        | '/1'
-      views:
-        | never
-    }
-    'src/pages/2.md': {
-      routes:
-        | '/2'
+        | '/articles/[year]/[slug]'
       views:
         | never
     }

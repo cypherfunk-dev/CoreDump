@@ -10,7 +10,9 @@ const ui = useUiStore();
                 <span class="text-green-accent-3 font-weight-bold mr-1">
                     &gt;
                 </span>
-                <span class="text-h5 font-weight-bold spacing-title">.txt del soporte</span>
+                <RouterLink style="text-decoration: none; color: inherit;" to="/">
+                <span class="text-h5 font-weight-bold spacing-title" >.txt del soporte</span>
+                </RouterLink>   
             </v-app-bar-title>
             <v-spacer></v-spacer>
             <v-expand-x-transition>
