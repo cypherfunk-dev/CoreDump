@@ -48,7 +48,7 @@ const html = md.render(text);
 </script>
 
 <template>
-    <div class="pa-10 ma-10 markdown-view">
+    <div app class="pa-10 ma-10 markdown-view">
         <div class="pb-10 ">
             <h1>{{ metadata.metadata?.title }}</h1>
 

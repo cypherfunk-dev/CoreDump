@@ -1,16 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-const searchbar = ref(false);
-const search = ref('');
-const toggleSearch = () => {
-    searchbar.value = !searchbar.value;
-};
+import { useUiStore } from '../stores/ui';
 
-const onClickOutside = () => {
-    if (searchbar.value) {
-        searchbar.value = false;
-    }
-}
+const ui = useUiStore();
 </script>
 
 <template>
@@ -25,13 +16,13 @@ const onClickOutside = () => {
             <v-expand-x-transition>
                 
                 <div 
-                    v-if="searchbar" 
-                    v-click-outside="onClickOutside"
+                    v-if="ui.searchbar" 
+                    v-click-outside="ui.onClickOutside"
                     style="width: 500px;" 
                     class="mr-2"
                 >
                     <VTextField 
-                        v-model="search" 
+                        v-model="ui.search" 
                         density="compact" 
                         placeholder="Buscar comando, error o solución... (Ctrl + K)"
                         variant="solo-filled" 
@@ -43,10 +34,13 @@ const onClickOutside = () => {
                 </div>
             </v-expand-x-transition>
 
-            <v-btn icon @click.stop="toggleSearch" class="mr-1">
-                <v-icon>{{ searchbar ? 'mdi-close' : 'mdi-magnify' }}</v-icon>
+            <v-btn icon @click.stop="ui.toggleSearch" class="mr-1">
+                <v-icon>{{ ui.searchbar ? 'mdi-close' : 'mdi-magnify' }}</v-icon>
             </v-btn>
-            <v-app-bar-nav-icon class="mr-4"></v-app-bar-nav-icon>
+
+            <v-btn icon @click="ui.toggleSideBar">
+            <v-icon >{{ ui.sidebar ? 'mdi-page-last' : 'mdi-page-first' }}</v-icon>
+            </v-btn>
         </v-app-bar>
 </template>
 

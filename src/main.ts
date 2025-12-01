@@ -17,8 +17,12 @@ import { createApp } from 'vue'
 import 'unfonts.css'
 import '@/styles/markdown-view.sass'
 
-const app = createApp(App)
+// Stores
+import { createPinia } from 'pinia'
 
+const app = createApp(App)
+const pinia = createPinia()
+app.use(pinia)
 registerPlugins(app)
 
 app.mount('#app')

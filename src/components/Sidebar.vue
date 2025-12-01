@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { useUiStore } from '../stores/ui';
+
+const ui = useUiStore();
 const articulosRecientes = [
   {
     titulo: "Cómo integrar autenticación JWT en tu API",
@@ -33,9 +36,45 @@ const articulosRecientes = [
 </script>
 
 <template>
-  <v-navigation-drawer app permanent location="right" :width="470">
+  <v-navigation-drawer app location="right" :width="470" v-model="ui.sidebar" class="bg-darken-4" style="overflow-y: auto !important" >
     <v-list dense>
-    </v-list>
+      <v-img
+  :width="300"
+  aspect-ratio="16/9"
+  cover
+  class="mx-auto"
+  src="../assets/avatar.png"
+></v-img>
+      <v-list-item>
+        <v-list-item-content class="text-center">
+          <v-list-item-title class="text-h5 font-weight-bold ">Departamento de soporte mental</v-list-item-title>
+          <v-list-item-subtitle class="text-subtitle-1 pb-4" >Soportamos máquinas, soportamos personas. Apenas soportamos vivir.</v-list-item-subtitle>
+        
+        </v-list-item-content>
+      </v-list-item>
+    </v-list> 
+    <v-divider class="my-2 separator" />
+    <!-- card con nube de tags de categorias populares -->
+    <v-card class="mx-4 my-4 pa-4 tagscloud" outlined>
+
+      <v-card-title class="text-h6 pb-5">Categorías Populares</v-card-title>
+      <v-card-text>
+        <v-chip-group
+          column
+        >
+          <v-chip class="ma-2 tag" color="green accent-4" text-color="white">#Backend</v-chip>
+          <v-chip class="ma-2 tag" color="green accent-4" text-color="white">#Frontend</v-chip>
+          <v-chip class="ma-2 tag" color="green accent-4" text-color="white">#DevOps</v-chip>
+          <v-chip class="ma-2 tag" color="green accent-4" text-color="white">#Infraestructura</v-chip>
+          <v-chip class="ma-2 tag" color="green accent-4" text-color="white">#Bases de Datos</v-chip>
+          <v-chip class="ma-2 tag" color="green accent-4" text-color="white">#Seguridad</v-chip>
+          <v-chip class="ma-2 tag" color="green accent-4" text-color="white">#Redes</v-chip>
+          <v-chip class="ma-2 tag" color="green accent-4" text-color="white">#Sistemas Operativos</v-chip>
+        </v-chip-group>
+      </v-card-text>
+    </v-card>
+    <v-divider class="my-2 separator" />
+
     <v-list-item>
       <v-list-item-content>
         <v-list-item-title class="text-h6 pb-5">Artículos Recientes</v-list-item-title>
@@ -59,7 +98,5 @@ const articulosRecientes = [
   </v-navigation-drawer>
 </template>
 
-<script setup lang="ts">
-</script>
 
 <style scoped></style>
