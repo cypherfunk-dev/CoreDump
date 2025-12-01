@@ -3,6 +3,8 @@ import Components from 'unplugin-vue-components/vite'
 import Vue from '@vitejs/plugin-vue'
 import Vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 import Fonts from 'unplugin-fonts/vite'
+import VueRouter from 'unplugin-vue-router/vite';
+import Markdown from 'unplugin-vue-markdown/vite';
 
 // Utilities
 import { defineConfig } from 'vite'
@@ -11,9 +13,15 @@ import { fileURLToPath, URL } from 'node:url'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
+    VueRouter({
+      // Configure unplugin-vue-router to also consider .md files as pages
+      extensions: ['.vue', '.md'],
+    }),
     Vue({
       template: { transformAssetUrls },
+      include: [/\.vue$/, /\.md$/],
     }),
+    Markdown({} as any),
     // https://github.com/vuetifyjs/vuetify-loader/tree/master/packages/vite-plugin#readme
     Vuetify(),
     Components(),

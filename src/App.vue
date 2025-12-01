@@ -7,7 +7,7 @@ import Article from './components/Article.vue';
 <template>
   <v-app>
     <Navbar />
-    <v-main class="layout">
+    <v-main>
       <Article />
       <Sidebar />
     </v-main>

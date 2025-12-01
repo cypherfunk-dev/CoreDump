@@ -8,14 +8,16 @@ const articulosRecientes = [
     fecha: "2025-11-29",
     categoria: "Backend",
     autor: "Soporte Técnico",
-    resumen: "Guía rápida para implementar JWT con buenas prácticas y manejo de tokens."
+    resumen: "Guía rápida para implementar JWT con buenas prácticas y manejo de tokens.",
+    url: "/index"
   },
   {
     titulo: "Optimizar rendimiento en front con lazy loading",
     fecha: "2025-11-21",
     categoria: "Frontend",
     autor: "Equipo Web",
-    resumen: "Estrategias prácticas para mejorar tiempos de carga y UX."
+    resumen: "Estrategias prácticas para mejorar tiempos de carga y UX.",
+    url: "/2"
   },
   {
     titulo: "Solución a error 504 en servidores Nginx",
@@ -45,18 +47,15 @@ const articulosRecientes = [
   class="mx-auto"
   src="../assets/avatar.png"
 ></v-img>
-      <v-list-item>
-        <v-list-item-content class="text-center">
+      <v-list-item class="text-center">
           <v-list-item-title class="text-h5 font-weight-bold ">Departamento de soporte mental</v-list-item-title>
           <v-list-item-subtitle class="text-subtitle-1 pb-4" >Soportamos máquinas, soportamos personas. Apenas soportamos vivir.</v-list-item-subtitle>
         
-        </v-list-item-content>
       </v-list-item>
     </v-list> 
     <v-divider class="my-2 separator" />
     <!-- card con nube de tags de categorias populares -->
     <v-card class="mx-4 my-4 pa-4 tagscloud" outlined>
-
       <v-card-title class="text-h6 pb-5">Categorías Populares</v-card-title>
       <v-card-text>
         <v-chip-group
@@ -75,11 +74,11 @@ const articulosRecientes = [
     </v-card>
     <v-divider class="my-2 separator" />
 
-    <v-list-item>
-      <v-list-item-content>
+      <v-list-item>
         <v-list-item-title class="text-h6 pb-5">Artículos Recientes</v-list-item-title>
         <v-list-item-subtitle>
           <div v-for="articulo in articulosRecientes" :key="articulo.titulo" class="mb-4">
+             <router-link to="/2">  test  </router-link>
             <div class="text-subtitle-1 font-weight-bold">{{ articulo.titulo }}</div>
             <div class="text-caption grey--text pb-3">
               {{ articulo.fecha }} | {{ articulo.categoria }} | por {{ articulo.autor }}
@@ -88,15 +87,9 @@ const articulosRecientes = [
               {{ articulo.resumen }}
             </div>
             <v-divider v-if="articulo !== articulosRecientes[articulosRecientes.length - 1]" class="my-2 separator" />
-
           </div>
-
         </v-list-item-subtitle>
-      </v-list-item-content>
     </v-list-item>
 
   </v-navigation-drawer>
 </template>
-
-
-<style scoped></style>

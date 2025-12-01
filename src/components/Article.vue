@@ -1,20 +1,22 @@
 <script setup lang="ts">
 import MarkdownIt from 'markdown-it';
-import articulo from '../../articles/1.md?raw';
+import articulo from '../pages/index.md?raw';
 
 const md = new MarkdownIt();
 let text: string = '';
 let metadatatags: string[] = [];
 const extractMetadata = (content: string): { metadata: Record<string, string>, text: string } => {
-    const metadataRegex = /---\s*([\s\S]*?)\s*---/;
+    const metadataRegex = /---\s*([\s\S]*?)\s*---/
+;
     const match = content.match(metadataRegex);
     if (match) {
+        console.log('Metadata block found:', match[1]);
         const metadataString = match[1];
-        const metadataLines = metadataString.split('\n');
+        const metadataLines = metadataString?.split('\n');
         const metadata: Record<string, string> = {};
-        metadataLines.forEach(line => {
+        metadataLines?.forEach(line => {
             const [key, ...rest] = line.split(':');
-            metadata[key.trim()] = rest.join(':').trim();
+            metadata[key?.trim()] = rest.join(':').trim();
         });
         // Remove metadata block from content
         text = content.replace(match[0], '').trim();
@@ -37,11 +39,12 @@ const extractMetadata = (content: string): { metadata: Record<string, string>, t
 
 
         return { metadata, text };
+    } else {
+        text = content; // Use the entire content if no metadata block is found
     }
 
     return { metadata: {}, text: '' };
 };
-
 const metadata = extractMetadata(articulo);
 const html = md.render(text);
 
@@ -51,24 +54,28 @@ const html = md.render(text);
     <div app class="pa-10 ma-10 markdown-view">
         <div class="pb-10 ">
             <h1>{{ metadata.metadata?.title }}</h1>
-
             <div class="metadata-container pb-10">
-                <div class="">
+                <div v-if="(Object.keys(metadata.metadata).length !== 0) && Object.keys(metadata.metadata)[0] !== ''">
                     <div>
                         <span class="font-weight-bold">Escrito por: </span>
-                        <span class="lastlinemetadata">{{ metadata.metadata?.author }}</span>
+                        <span class="lastlinemetadata">{{ metadata.metadata.author }}</span>
                     </div>
                     <div>
                         <span class="font-weight-bold">Subido un: </span>
-                        <span class="lastlinemetadata">{{ metadata.metadata?.date }}</span>
+                        <span class="lastlinemetadata">{{ metadata.metadata.date }}</span>
                     </div>
                     <div>
                         <span class="font-weight-bold">Resumen: </span>
-                        <span class="lastlinemetadata">{{ metadata.metadata?.abstract }}</span>
+                        <span class="lastlinemetadata">{{ metadata.metadata.abstract }}</span>
+                    </div>
+                    <div>
+                        <span class="font-weight-bold">Etiquetas: </span>
+                        <span v-for="tag in metadatatags" :key="tag"> {{ '#' + tag + ' ' }} </span><br />
                     </div>
                 </div>
-                <span class="font-weight-bold">Etiquetas: </span><span v-for="tag in metadatatags" :key="tag"> {{ '#' +
-                    tag + ' ' }} </span><br />
+                <div v-if="(Object.keys(metadata.metadata).length === 0) || Object.keys(metadata.metadata)[0] === ''">
+                    <em>No metadata available.</em>
+                </div>
             </div>
         </div>
         <article v-html="html" />

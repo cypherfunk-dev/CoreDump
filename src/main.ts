@@ -5,24 +5,40 @@
  */
 
 // Plugins
-import { registerPlugins } from '@/plugins'
+import { registerPlugins } from "@/plugins";
 
 // Components
-import App from './App.vue'
+import App from "./App.vue";
 
 // Composables
-import { createApp } from 'vue'
+import { createApp } from "vue";
 
 // Styles
-import 'unfonts.css'
-import '@/styles/markdown-view.sass'
+import "unfonts.css";
+import "@/styles/markdown-view.sass";
 
 // Stores
-import { createPinia } from 'pinia'
+import { createPinia } from "pinia";
 
-const app = createApp(App)
-const pinia = createPinia()
-app.use(pinia)
-registerPlugins(app)
+// Router
+import {
+  createRouter,
+  createWebHistory,
+  type RouteRecordRaw,
+} from "vue-router";
 
-app.mount('#app')
+import { routes as generatedRoutes } from "vue-router/auto-routes";
+const routes = generatedRoutes as unknown as RouteRecordRaw[];
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes,
+});
+
+const app = createApp(App);
+const pinia = createPinia();
+app.use(pinia);
+app.use(router);
+registerPlugins(app);
+
+app.mount("#app");
