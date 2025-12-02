@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useUiStore } from '../stores/ui';
+import siteTexts  from '../database/site-texts.json';
 
 const ui = useUiStore();
 </script>
@@ -11,7 +12,7 @@ const ui = useUiStore();
                     &gt;
                 </span>
                 <RouterLink style="text-decoration: none; color: inherit;" to="/">
-                <span class="text-h5 font-weight-bold spacing-title" >.txt del soporte</span>
+                <span class="text-h5 font-weight-bold spacing-title" >{{ siteTexts.siteName }}</span>
                 </RouterLink>   
             </v-app-bar-title>
             <v-spacer></v-spacer>
@@ -26,7 +27,7 @@ const ui = useUiStore();
                     <VTextField 
                         v-model="ui.search" 
                         density="compact" 
-                        placeholder="Buscar comando, error o solución... (Ctrl + K)"
+                        :placeholder="siteTexts.searchPlaceholder"
                         variant="solo-filled" 
                         flat 
                         single-line 

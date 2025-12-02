@@ -14,8 +14,6 @@ const rawContent = ref('');
 const route = useRoute();
 const year = route.params.year as string;
 const slug = route.params.slug as string;
-console.log('Parámetros de la ruta:', { year, slug });
-console.log('Ruta completa:', route.fullPath);
 
 // Función para extraer metadatos del archivo Markdown
 const extractMetadata = (content: string): { metadata: Record<string, string>, text: string, tags: string[] } => {
@@ -73,16 +71,6 @@ const loadAndProcessContent = async (year: string, slug: string) => {
         metadata.value = extractedMetadata;
         metadatatags.value = tags;
         htmlContent.value = md.render(text);
-
-        console.log('--- 🏷️ Metadatos Extraídos ---');
-        console.log(extractedMetadata);
-        console.log('--- 🧼 Texto Markdown Limpio ---');
-        console.log(text);
-
-        // 3. CONSOLE.LOG DEL HTML FINAL
-        console.log('--- 🌐 HTML Renderizado Final ---');
-        console.log(htmlContent.value);
-        console.log('----------------------------------');
     } catch (error) {
         console.error('Error fetching the markdown file:', error);
     }
@@ -102,7 +90,8 @@ watch(
 </script>
 
 <template>
-    <div app class="pa-10 ma-10 markdown-view">
+    <v-container app fluid style="">
+    <div app class="pa-10 ma-10 markdown-view" >
         <div class="pb-10 ">
             <h1>{{ metadata.title }}</h1>
             <div class="metadata-container pb-10">
@@ -131,4 +120,5 @@ watch(
         </div>
         <article v-html="htmlContent" />
     </div>
+    </v-container>
 </template>

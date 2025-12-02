@@ -2,9 +2,9 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 
-const dbRoute = path.resolve( '../database/db.json');
+const dbRoute = path.resolve( './src/database/db.json');
 
-const mdFolder = path.resolve('../../public/markdowns')
+const mdFolder = path.resolve('./public/markdowns')
 
 import { readdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
@@ -24,18 +24,31 @@ async function* getFiles(dir) {
     }
 }
 
-// Example usage:
 (async () => {
     const directoryPath = mdFolder; 
     console.log(`Scanning directory: ${directoryPath}`);
-    fs.writeFileSync(dbRoute,  '' ); // Clear the file before writing}
-    
-    for await (const file of getFiles(directoryPath)) {
+    fs.writeFileSync(dbRoute,  '' );
+    let index = 0;
+    for await (const file of getFiles(directoryPath) )  {
+
         const parsed = file.split(path.sep);
         const slug =  '/articles/'+ parsed[parsed.length - 2]+'/'+parsed[parsed.length - 1].replace('.md','');
-        // console.log(`File: ${file}, Slug: ${slug}`);
-        // console.log(matter.read(file).data)
-        fs.appendFileSync(dbRoute,  '{ "slug": "'+slug+'", "metadata": ' + JSON.stringify(matter.read(file).data) + ' },\n' );
+        const stringtoobject = JSON.parse('{"slug": "'+slug+'", "metadata": ' + JSON.stringify(matter.read(file).data) + ' }');
+        // fs.appendFileSync(dbRoute,  '{ "slug": "'+slug+'", "metadata": ' + JSON.stringify(matter.read(file).data) + ' },\n' );
+        
+        if (index === 0) {
+            fs.appendFileSync(dbRoute,  '[' + JSON.stringify(stringtoobject) + ',\n' );
+        } else {
+            fs.appendFileSync(dbRoute,  JSON.stringify(stringtoobject) + ',\n' );
+        }
+        index++;
     }
+    // eliminate last comma and close the array
+    const data = fs.readFileSync(dbRoute, 'utf8');
+    const updatedData = data.replace(/,\n$/, '\n');
+    fs.writeFileSync(dbRoute, updatedData);
+    fs.appendFileSync(dbRoute,  ']' );
+    console.log('Database generation completed.');
 })();
 
+// todo replace blank spaces with underscores in slugs and filenames

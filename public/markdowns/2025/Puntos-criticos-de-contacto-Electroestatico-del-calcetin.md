@@ -52,10 +52,10 @@ Los siguientes puntos son particularmente vulnerables a la interferencia electro
 
 #### **D. Puntos de Acceso Inalámbricos (AP) / Antenas Wi-Fi**
     
-    * **Puntos de Contacto Críticos:**
+    **Puntos de Contacto Críticos:**
         * **Antenas:** El campo electrostático puede distorsionar el patrón de radiación o introducir ruido en la señal inalámbrica.
         * **Circuitos Internos del AP:** Sensibilidad a descargas que pueden afectar la estabilidad de la transmisión.
-    * **Impacto:** Reducción del rango Wi-Fi, disminución del rendimiento, desconexiones de clientes.
+    **Impacto:** Reducción del rango Wi-Fi, disminución del rendimiento, desconexiones de clientes.
 
 ---
 

@@ -59,6 +59,3 @@ Ante la epidemia del EBNR, se proponen soluciones de *hardening* rigurosas:
 
 El EBNR es la manifestación física de una falla en la gobernanza de activos de oficina. Mientras que invertimos millones en seguridad de red, permitimos que un recurso de $0.50 comprometa la productividad. La única solución es un enfoque de **Seguridad de Confianza Cero** aplicado a la papelería. Nunca asuma el retorno; asuma la pérdida y fortifique sus defensas.
 
----
-
-Este tema es tan profundo como lo son los bolsillos de algunos compañeros. ¿Te gustaría que escribiera sobre la "Física del cable USB siempre orientado incorrectamente"?

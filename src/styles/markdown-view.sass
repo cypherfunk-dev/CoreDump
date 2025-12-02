@@ -1,15 +1,24 @@
 $color-primario: #3a7569
 $fuente-principal: 'Inter', sans-serif
+$fu
+$text-primary: #ddddddff
+$text-secondary: #8f8f8fff
+$text-dark: #212121
+$alternative1: #C1DBE3
+$alternative2: #C7DFC5
+$alternative3: #F0F7EE
+$alternative4: #AFB3F7
+$alternative5: #C1BCAC
+$alternative6: #96C5F7
 
 .markdown-view
   padding: 10px
   border-radius: 4px
   line-height: 1.6
-  
+
   h1
     letter-spacing: 0.7px
     padding-bottom: 50px
-
 
   h2
     border-bottom: 2px solid $color-primario
@@ -17,7 +26,6 @@ $fuente-principal: 'Inter', sans-serif
     margin-top: 30px
     margin-bottom: 20px
     letter-spacing: 3px
-
 
   a
     color: $color-primario
@@ -49,7 +57,6 @@ $fuente-principal: 'Inter', sans-serif
   span
     letter-spacing: 0.9px
 
-        
 .lastlinemetadata
   line-height: 1.4!important
 
@@ -69,12 +76,64 @@ $fuente-principal: 'Inter', sans-serif
   margin-top: 20px
   display: flex
   flex-wrap: wrap
-  background-color: rgba($color-primario, 0.1)
-  border-radius: 4px
+  border-radius: 30px
+  border: 1px solid rgba($color-primario, 0.7)
+  background: #0F2027
+  background: -webkit-linear-gradient(to right, #2c5364a6, #203a432a, #0f2027b3)
+  background: linear-gradient(to right, #2c5364a6, #203a4329, #0f2027b3)
+  color: $text-secondary
+  justify-content: center
+
   .tag
-    background-color: $color-primario
-    color: white
+    background-color: $alternative5
+    color: $text-dark
     padding: 5px 10px
     border-radius: 15px
     font-size: 0.85em
+    font-weight: 700
     margin: 2px
+
+.recent-articles
+  text-decoration: none
+  color: inherit
+  padding-bottom: 8px
+  &:hover
+    text-decoration: underline
+  div
+    margin-bottom: 5px
+
+  span.by
+    font-style: italic
+  .title
+    padding: 8px
+    font-weight: bold
+    font-size: 1em
+    line-height: 1.5
+  .subtitle
+    padding: 8px
+    font-size: 0.9em
+
+.social-icons
+  justify-content: center
+  gap: 15px
+  v-icon
+    color: $color-primario
+    font-size: 28px
+    cursor: pointer
+    transition: transform 0.2s
+
+    &:hover
+      transform: scale(1.5)
+
+
+.sidebar-title  
+  font-size: 1.5em
+  font-weight: bold
+  color: $text-primary
+  text-align: center
+  padding-bottom: 8px
+  letter-spacing: 1px
+
+.sidebar-subtitle
+  font-size: 0.9em
+  color: $alternative5
