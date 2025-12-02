@@ -9,7 +9,7 @@ const articulosRecientes = [
     categoria: "Backend",
     autor: "Soporte Técnico",
     resumen: "Guía rápida para implementar JWT con buenas prácticas y manejo de tokens.",
-    url: "/index"
+    url: "/articles/2025/apagar-notebook-con-bate-no-es-metodo-recomendado"
   },
   {
     titulo: "Optimizar rendimiento en front con lazy loading",
@@ -17,14 +17,16 @@ const articulosRecientes = [
     categoria: "Frontend",
     autor: "Equipo Web",
     resumen: "Estrategias prácticas para mejorar tiempos de carga y UX.",
-    url: "/2"
+    url: "/articles/2025/apagar-notebook-con-bate-no-es-metodo-recomendado"
   },
   {
     titulo: "Solución a error 504 en servidores Nginx",
     fecha: "2025-11-10",
     categoria: "Infraestructura",
     autor: "SysAdmin",
-    resumen: "Causas comunes y ajustes recomendados para evitar timeouts."
+    resumen: "Causas comunes y ajustes recomendados para evitar timeouts.",
+    url: "/articles/2025/apagar-notebook-con-bate-no-es-metodo-recomendado"
+
   },
   {
     titulo: "Buenas prácticas para migrar bases de datos",
@@ -78,7 +80,7 @@ const articulosRecientes = [
         <v-list-item-title class="text-h6 pb-5">Artículos Recientes</v-list-item-title>
         <v-list-item-subtitle>
           <div v-for="articulo in articulosRecientes" :key="articulo.titulo" class="mb-4">
-             <router-link to="/2">  test  </router-link>
+             <router-link :to="articulo.url" class="text-decoration-none">  
             <div class="text-subtitle-1 font-weight-bold">{{ articulo.titulo }}</div>
             <div class="text-caption grey--text pb-3">
               {{ articulo.fecha }} | {{ articulo.categoria }} | por {{ articulo.autor }}
@@ -87,6 +89,7 @@ const articulosRecientes = [
               {{ articulo.resumen }}
             </div>
             <v-divider v-if="articulo !== articulosRecientes[articulosRecientes.length - 1]" class="my-2 separator" />
+            </router-link>
           </div>
         </v-list-item-subtitle>
     </v-list-item>
