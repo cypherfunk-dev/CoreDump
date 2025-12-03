@@ -33,7 +33,7 @@ async function* getFiles(dir) {
 
         const parsed = file.split(path.sep);
         const slug =  '/articles/'+ parsed[parsed.length - 2]+'/'+parsed[parsed.length - 1].replace('.md','');
-        const stringtoobject = JSON.parse('{"slug": "'+slug+'", "metadata": ' + JSON.stringify(matter.read(file).data) + ' }');
+        const stringtoobject = JSON.parse('{"id": "'+index+'", "slug": "'+slug+'", "metadata": ' + JSON.stringify(matter.read(file).data) + ' }');
         // fs.appendFileSync(dbRoute,  '{ "slug": "'+slug+'", "metadata": ' + JSON.stringify(matter.read(file).data) + ' },\n' );
         
         if (index === 0) {

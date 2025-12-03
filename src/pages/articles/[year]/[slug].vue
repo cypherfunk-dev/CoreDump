@@ -2,10 +2,11 @@
 import MarkdownIt from 'markdown-it';
 import { ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
+import timeformat from '@/utils/dateparser';
 
 // Instanciamos MarkdownIt para procesar el Markdown
 const md = new MarkdownIt();
-const metadata = ref({});
+const metadata = ref<Record<string, string>>({});
 let metadatatags = ref<string[]>([]);
 const htmlContent = ref('');
 const rawContent = ref('');
@@ -24,10 +25,10 @@ const extractMetadata = (content: string): { metadata: Record<string, string>, t
 
     if (match) {
         const metadataString = match[1];
-        const metadataLines = metadataString.split('\n');
+        const metadataLines = metadataString?.split('\n');
         const metadata: Record<string, string> = {};
 
-        metadataLines.forEach(line => {
+        metadataLines?.forEach(line => {
             const [key, ...rest] = line.split(':');
             metadata[key.trim()] = rest.join(':').trim();
         });
@@ -41,11 +42,7 @@ const extractMetadata = (content: string): { metadata: Record<string, string>, t
         // Convertir la fecha a formato legible
         if (metadata.date) {
             const dateObj = new Date(metadata.date);
-            metadata.date = dateObj.toLocaleDateString('es-ES', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
+            metadata.date = timeformat().format(dateObj);
         }
 
         return { metadata, text: cleantext, tags: processedTags };
@@ -70,6 +67,7 @@ const loadAndProcessContent = async (year: string, slug: string) => {
         const { metadata: extractedMetadata, text, tags } = extractMetadata(content);
         metadata.value = extractedMetadata;
         metadatatags.value = tags;
+        console.log('Extracted Metadata:', metadata);
         htmlContent.value = md.render(text);
     } catch (error) {
         console.error('Error fetching the markdown file:', error);
@@ -77,11 +75,14 @@ const loadAndProcessContent = async (year: string, slug: string) => {
 };
 
 // Reaccionamos al cambio de los parámetros de la ruta
+// Reaccionamos al cambio de los parámetros de la ruta
 watch(
-    () => [route.params.year, route.params.slug],  // Observamos los cambios de los parámetros
-    ([newYear, newSlug]) => {
+    () => route.params,
+    (newParams) => {
+        const newYear = newParams.year as string;
+        const newSlug = newParams.slug as string;
         if (newYear && newSlug) {
-            loadAndProcessContent(newYear as string, newSlug as string);
+            loadAndProcessContent(newYear, newSlug);
         }
     },
     { immediate: true }

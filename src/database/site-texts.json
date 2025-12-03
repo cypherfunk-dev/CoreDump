@@ -1,15 +1,14 @@
 {
-    "siteName": ".txt del soporte",
-    "footerText": "© 2025 .txt del soporte.",
-    "contactUs": "Contáctanos",
-    "aboutUs": "Sobre Nosotros",
-    "home": "Inicio",
-    "services": "Servicios",
-    "blog": "Blog",
-    "readMore": "Leer más",
-    "subscribeNewsletter": "Suscríbete al boletín",
-    "searchPlaceholder": "Buscar comando, error o solución",
-    "latestPosts": "Artículos Recientes",
-    "tagscloud": "Nube de Tags",
-    "popularCategories": "Categorías Populares"
+  "siteName": ".txt del soporte",
+  "footerText": "© 2025 .txt del soporte.",
+  "readMore": "Leer más",
+  "searchPlaceholder": "Buscar comando, error o solución...",
+  "latestPosts": "Artículos Recientes",
+  "tagscloud": "Nube de Tags",
+  "popularCategories": "Categorías Populares",
+  "noResultsFound": "No se encontraron resultados.",
+  "searchInstructions": "Ingrese un término de búsqueda para encontrar comandos, errores o soluciones.",
+  "advancedSearch": "Búsqueda Avanzada",
+  "searchResultsCount": "Se encontraron {count} resultados.",
+  "goBackHome": "Volver al Inicio"
 }
