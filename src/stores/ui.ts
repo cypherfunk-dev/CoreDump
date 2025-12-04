@@ -17,7 +17,8 @@ export const useUiStore = defineStore('ui', {
   state: () => ({
     searchbar: false,
     search: '',
-    sidebar: true
+    sidebar: true,
+    loading: false
   }),
   actions: {
     toggleSearch() {
@@ -28,6 +29,9 @@ export const useUiStore = defineStore('ui', {
       console.log('clicked outside')
       console.log(this.search)
       },
+    onloading(val: boolean) {
+      this.loading = val
+    },
     toggleSideBar() {
       this.sidebar = !this.sidebar
     },

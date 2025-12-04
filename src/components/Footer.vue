@@ -5,7 +5,7 @@ import siteTexts from '../database/site-texts.json';
 <template>
   <v-footer class="bg-darken-4">
     <v-col class="text-center white--text">
-      {{ siteTexts.footerText }}
+      {{ siteTexts.siteName }}
     </v-col>
   </v-footer>
 </template>

@@ -3,6 +3,8 @@ import MarkdownIt from 'markdown-it';
 import { ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import timeformat from '@/utils/dateparser';
+import { useUiStore } from '@/stores/ui';
+const ui = useUiStore();
 
 // Instanciamos MarkdownIt para procesar el Markdown
 const md = new MarkdownIt();
@@ -32,7 +34,7 @@ const extractMetadata = (content: string): { metadata: Record<string, string>, t
             const [key, ...rest] = line.split(':');
             metadata[key.trim()] = rest.join(':').trim();
         });
-        
+
         cleantext = content.replace(match[0], '').trim();
 
         if (metadata.tags) {
@@ -52,7 +54,6 @@ const extractMetadata = (content: string): { metadata: Record<string, string>, t
 
     return { metadata: {}, text: content, tags: [] };
 };
-
 // Función para cargar y procesar el contenido
 const loadAndProcessContent = async (year: string, slug: string) => {
     try {
@@ -82,7 +83,12 @@ watch(
         const newYear = newParams.year as string;
         const newSlug = newParams.slug as string;
         if (newYear && newSlug) {
-            loadAndProcessContent(newYear, newSlug);
+            ui.onloading(true);
+            console.log('Loading article:', newYear, newSlug);
+            loadAndProcessContent(newYear, newSlug).finally(() => {
+                ui.onloading(false);
+                console.log('Article loaded.');
+            });
         }
     },
     { immediate: true }
@@ -92,34 +98,35 @@ watch(
 
 <template>
     <v-container app fluid style="">
-    <div app class="pa-10 ma-10 markdown-view" >
-        <div class="pb-10 ">
-            <h1>{{ metadata.title }}</h1>
-            <div class="metadata-container pb-10">
-                <div v-if="(Object.keys(metadata).length !== 0) && Object.keys(metadata)[0] !== ''">
-                    <div>
-                        <span class="font-weight-bold">Escrito por: </span>
-                        <span class="lastlinemetadata">{{ metadata.author }}</span>
+        <div app class="ma-10 markdown-view">
+            <div class="pb-10 ">
+                <h1>{{ metadata.title }}</h1>
+                <div class="metadata-container pb-10">
+                    <div v-if="(Object.keys(metadata).length !== 0) && Object.keys(metadata)[0] !== ''">
+                        <div>
+                            <span class="font-weight-bold">Escrito por: </span>
+                            <span class="lastlinemetadata">{{ metadata.author }}</span>
+                        </div>
+                        <div>
+                            <span class="font-weight-bold">Subido un: </span>
+                            <span class="lastlinemetadata">{{ metadata.date }}</span>
+                        </div>
+                        <div>
+                            <span class="font-weight-bold">Resumen: </span>
+                            <span class="lastlinemetadata">{{ metadata.abstract }}</span>
+                        </div>
+                        <div>
+                            <span class="font-weight-bold">Etiquetas: </span>
+                            <span v-for="tag in metadatatags" :key="tag"> {{ '#' + tag + ' ' }} </span><br />
+                        </div>
                     </div>
-                    <div>
-                        <span class="font-weight-bold">Subido un: </span>
-                        <span class="lastlinemetadata">{{ metadata.date }}</span>
+                    <div v-if="(Object.keys(metadata).length === 0) || Object.keys(metadata)[0] === ''">
+                        <em>No metadata available.</em>
                     </div>
-                    <div>
-                        <span class="font-weight-bold">Resumen: </span>
-                        <span class="lastlinemetadata">{{ metadata.abstract }}</span>
-                    </div>
-                    <div>
-                        <span class="font-weight-bold">Etiquetas: </span>
-                        <span v-for="tag in metadatatags" :key="tag"> {{ '#' + tag + ' ' }} </span><br />
-                    </div>
-                </div>
-                <div v-if="(Object.keys(metadata).length === 0) || Object.keys(metadata)[0] === ''">
-                    <em>No metadata available.</em>
                 </div>
             </div>
+            <v-progress-circular color="primary" indeterminate v-show="ui.loading === true" />
+                <article v-show="ui.loading === false" v-html="htmlContent" />
         </div>
-        <article v-html="htmlContent" />
-    </div>
     </v-container>
 </template>

@@ -1,7 +1,7 @@
 [{
     "id": 1,
-    "name": "Departamento de soporte mental",
-    "bio": "Soportamos máquinas, soportamos personas. Apenas soportamos vivir.",
+    "name": "Soporte mental",
+    "bio": "Soportamos máquinas, personas. No hay quien nos sosporte.",
     "email": "quarkup@tutanota.com",
     "profile_picture": "../assets/avatar.png",
     "instagram": "muebleriadonsaico",

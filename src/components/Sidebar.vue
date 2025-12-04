@@ -56,11 +56,11 @@ const ui = useUiStore();
     </v-card>
     <v-divider class="my-2 separator" />
 
-    <v-list-item>
+    <v-list-item class="recent-articles-view">
       <v-list-item-title class="sidebar-title">Artículos Recientes</v-list-item-title>
       <v-list-item-subtitle>
         <div v-for="articulo in database" :key="articulo.metadata?.title">
-          <router-link :to="articulo.slug" class="recent-articles">
+          <router-link :to="articulo.slug"  class="recent-articles">
             <div class="title">{{ articulo.metadata?.title }}</div>
 
             <div class="subtitle">
