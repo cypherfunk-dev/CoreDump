@@ -97,9 +97,9 @@ watch(
 </script>
 
 <template>
-    <v-container app fluid style="">
-        <div app class="ma-10 markdown-view">
-            <div class="pb-10 ">
+    <v-container app fluid class="markdown-container">
+        <div app class="markdown-view">
+            <div >
                 <h1>{{ metadata.title }}</h1>
                 <div class="metadata-container pb-10">
                     <div v-if="(Object.keys(metadata).length !== 0) && Object.keys(metadata)[0] !== ''">
