@@ -33,6 +33,9 @@ const routes = generatedRoutes as unknown as RouteRecordRaw[];
 const router = createRouter({
   history: createWebHistory(),
   routes,
+  scrollBehavior() {
+    return { top: 0, behavior: "smooth" };
+  },
 });
 
 const app = createApp(App);
