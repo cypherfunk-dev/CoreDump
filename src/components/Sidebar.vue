@@ -56,21 +56,63 @@ const ui = useUiStore();
     </v-card>
     <v-divider class="my-2 separator" />
 
-    <v-list-item class="recent-articles-view">
-      <v-list-item-title class="sidebar-title">Artículos Recientes</v-list-item-title>
-      <v-list-item-subtitle>
-        <div v-for="articulo in database" :key="articulo.metadata?.title">
-          <router-link :to="articulo.slug"  class="recent-articles">
-            <div class="title">{{ articulo.metadata?.title }}</div>
 
-            <div class="subtitle">
-              {{ timeformat().format(new Date(articulo.metadata?.date)) }} </div>
 
-            <v-divider v-if="articulo !== database[database.length - 1]" class="my-2 separator" />
-          </router-link>
-        </div>
-      </v-list-item-subtitle>
-    </v-list-item>
+
+
+
+
+
+
+
+
+<v-list-item class="recent-articles-view">
+  <v-list-item-title class="sidebar-title">Artículos Recientes</v-list-item-title>
+
+  <div v-for="articulo in database" :key="articulo.metadata?.title">
+    <v-row no-gutters class="align-center">
+      <!-- Columna izquierda: imagen -->
+      <v-col cols="4">
+        <v-img
+          :src="articulo.metadata?.image"
+          :alt="articulo.metadata?.title"
+          cover
+        />
+      </v-col>
+
+      <!-- Columna derecha: texto -->
+      <v-col cols="8" class="pl-3">
+        <router-link :to="articulo.slug" class="recent-articles">
+          <div class="title">
+            {{ articulo.metadata?.title }}
+          </div>
+
+          <div class="subtitle">
+            {{ timeformat().format(new Date(articulo.metadata?.date)) }}
+          </div>
+        </router-link>
+      </v-col>
+    </v-row>
+
+    <v-divider
+      v-if="articulo !== database[database.length - 1]"
+      class="my-2 separator"
+    />
+  </div>
+</v-list-item>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   </v-navigation-drawer>
 </template>

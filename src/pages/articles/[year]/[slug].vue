@@ -76,7 +76,6 @@ const loadAndProcessContent = async (year: string, slug: string) => {
 };
 
 // Reaccionamos al cambio de los parámetros de la ruta
-// Reaccionamos al cambio de los parámetros de la ruta
 watch(
     () => route.params,
     (newParams) => {
@@ -126,6 +125,7 @@ watch(
                 </div>
             </div>
             <v-progress-circular color="primary" indeterminate v-show="ui.loading === true" />
+                
                 <article v-show="ui.loading === false" v-html="htmlContent" />
         </div>
     </v-container>

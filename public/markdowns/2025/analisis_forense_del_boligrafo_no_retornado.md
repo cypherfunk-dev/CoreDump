@@ -2,18 +2,21 @@
 title: "Análisis Forense del Bolígrafo No Retornado: Impacto Cero-Day en la Productividad TI"
 date: 2025-12-03
 category: Ingeniería de Procesos y Ergonomía de Oficina
-tags: [cero_day, bolígrafos, seguridad, supply_chain, psicología_organizacional, robo_hormiga]
+tags: cero_day, bolígrafos, seguridad, supply_chain, psicología_organizacional, robo_hormiga
 author: Departamento de Soporte Mental (División de Recursos Tangibles Críticos)
 abstract: Este estudio aborda rigurosamente la sistemática desaparición de instrumentos de escritura de los escritorios de personal de TI. Se modela el fenómeno como un 'Exploit de Confianza' con un impacto económico subestimado en la cadena de suministro de la oficina, proponiendo soluciones de *hardening* a nivel de papelería.
+image: /images/2025/uno.png
 ---
 
-# Análisis Forense del Bolígrafo No Retornado: Impacto Cero-Day en la Productividad TI 🖋️🕵️‍♂️
+![esta es una imagen](/images/2025/uno.png)
+
 
 ## I. Introducción: El Problema de la Persistencia de la Escritura Manual
 
+
 En un entorno dominado por la computación cuántica y la inteligencia artificial, podría parecer trivial centrarse en un objeto tan rudimentario como el bolígrafo. Sin embargo, en el soporte de **Tecnologías de la Información (TI)**, la necesidad de un bolígrafo operativo es una **dependencia de recurso crítico** para tareas como:
 
-1.  Anotar contraseñas temporales en papel (Protocolo de Baja Confianza).
+1.  Anotar contraseñas temporales en papel (Protocolo de Baja Confianza).aaaaaaaaaaaa
 2.  Dibujar arquitecturas de red complejas a mano alzada.
 3.  Firmar la recepción de *hardware* de misión crítica.
 4.  Liberar la tensión dibujando monigotes durante videollamadas.

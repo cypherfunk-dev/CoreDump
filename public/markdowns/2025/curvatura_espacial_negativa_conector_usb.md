@@ -2,12 +2,15 @@
 title: "La Curvatura Espacial Negativa: Una Reevaluación de la Constante de Orientación del Conector USB"
 date: 2025-12-04
 category: Ingeniería de Conectividad y Física Teórica Aplicada
-tags: [usb, puerto, física_cuántica, frustración, relatividad, entropía]
+tags: usb, puerto, física_cuántica, frustración, relatividad, entropía
 author: Laboratorio de Tensión Humana y Conectividad (LTHC)
 abstract: Este estudio formaliza la **Constante de Orientación de Frustración (COF)**, una ley empírica que postula que la probabilidad de que un conector USB de Tipo A esté correctamente orientado es inversamente proporcional a la urgencia de conexión del usuario. Se exploran las implicaciones de la curvatura del espacio-tiempo local en la dinámica de inserción.
+image: /images/2025/tres.png
+
 ---
 
-# La Curvatura Espacial Negativa: Una Reevaluación de la Constante de Orientación del Conector USB 🔌🔄
+![esta es una imagen](/images/2025/tres.png)
+
 
 ## I. Introducción: La Paradoja de la Binaria de Inserción
 
