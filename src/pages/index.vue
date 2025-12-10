@@ -26,9 +26,7 @@ import timeformat from '@/utils/dateparser.ts'
         <div class="div3">
             <v-card class="h-100 d-flex flex-column pt-5">
                 <v-card-title class="text-wrap text-body-1" style="">{{ base[2].metadata.title }}</v-card-title>
-                <v-card-subtitle class="index-text-sm">{{ base[2].metadata.author }}</v-card-subtitle>
-                <v-card-subtitle class="index-text-sm">{{ timeformat().format(new Date(base[2].metadata.date))
-                    }}</v-card-subtitle>
+
             </v-card>
         </div>
         <div class="div4">
@@ -42,9 +40,7 @@ import timeformat from '@/utils/dateparser.ts'
         <div class="div5">
             <v-card class="h-100 d-flex flex-column pt-5">
                 <v-card-title class="text-wrap text-body-1">{{ base[4].metadata.title }}</v-card-title>
-                <v-card-subtitle class="index-text-sm">{{ base[4].metadata.author }}</v-card-subtitle>
-                <v-card-subtitle class="index-text-sm">{{ timeformat().format(new Date(base[4].metadata.date))
-                    }}</v-card-subtitle>
+
             </v-card>
         </div>
         <div class="div6">
