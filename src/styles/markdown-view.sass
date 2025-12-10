@@ -8,7 +8,7 @@ $alternative2: #C7DFC5
 $alternative3: #F0F7EE
 $alternative4: #AFB3F7
 $alternative5: #C1BCAC
-$alternative6: #96C5F7
+$alternative6: #96c5f727
 
 html
   overflow-y: auto
@@ -154,24 +154,45 @@ html
     .subtitle
       margin-bottom: 30px
 
+// index page styles
 
+.parent 
+  display: grid
+  grid-template-columns: repeat(5, 1fr)
+  grid-template-rows: repeat(5, 1fr)
+  grid-column-gap: 10px
+  grid-row-gap: 10px
+  padding: 30px
+  height: 140vh
 
-.main-article-index
-  background-color: $alternative6
-  padding: 20px
-  margin: 10px
+.div1  
+  grid-area: 1 / 1 / 3 / 4
+  border: 2px solid $alternative4
   border-radius: 8px
-  flex: 1
 
-.secondary-article-index
-  background-color: $alternative4
-  padding: 10px
-  margin: 10px
+.div2  
+  grid-area: 1 / 4 / 3 / 5
+  border: 2px solid $alternative5
   border-radius: 8px
-  flex: .5
 
-.wrapper-main-secondary
-  display: flex
-  flex-direction: column
-  height: 40vh
+.div3  
+  grid-area: 1 / 5 / 3 / 6
+  border: 2px solid $alternative1
+  border-radius: 8px
+.div4  
+  grid-area: 3 / 4 / 5 / 6
+  border: 2px solid $alternative4
+  border-radius: 8px
 
+.div5  
+  grid-area: 3 / 2 / 5 / 4 
+  border: 2px solid $alternative5
+  border-radius: 8px
+
+.div6  
+  grid-area: 3 / 1 / 5 / 2 
+  border: 2px solid $alternative1
+  border-radius: 8px
+
+.index-text-sm
+  font-size: 0.8em

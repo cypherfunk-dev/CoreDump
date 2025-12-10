@@ -1,60 +1,59 @@
-<template>
-    <v-container class="wrapper-main-secondary" >
-        <v-row justify="center" >
-            <v-col>
-                <v-card class="main-article-index">
-                    <v-card-title>
-                        <h1>Welcome to Our Blog</h1>
-                    </v-card-title>
-                    <v-card-text>
-                        <p>Discover the latest articles, insights, and stories from our community. Stay updated with new
-                            content and explore various topics that interest you.</p>
-                            ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                            ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                            ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                        </v-card-text>
-                </v-card>
-            </v-col>
-
-            <v-col cols="4">
-                <v-card class="secondary-article-index">
-                    <v-card-title>
-                        <h1>Welcome to Our Blog</h1>
-                    </v-card-title>
-                    <v-card-text>
-                        <p>Discover the latest articles, insights, and stories from our community. Stay updated with new
-                            content and explore various topics that interest you.</p>
-                    </v-card-text>
-                </v-card>
-
-                <v-card class="secondary-article-index">
-                    <v-card-title>
-                        <h1>Welcome to Our Blog</h1>
-                    </v-card-title>
-                    <v-card-text>
-                        <p>Discover the latest articles, insights, and stories from our community. Stay updated with new
-                            content and explore various topics that interest you.</p>
-                    </v-card-text>
-                </v-card>
-
-
-
-            </v-col>
-
-
-        </v-row>
-    </v-container>
-</template>
-
 <script setup>
-import { ref } from 'vue'
+import base from '@/database/db.json'
+import timeformat from '@/utils/dateparser.ts'
 
-const count = ref(0)
-const reset = () => { count.value = 0 }
 </script>
 
-<style scoped>
-.v-card {
-    overflow: hidden;
-}
-</style>
+<template>
+    <div class="parent">
+        <div class="div1">
+            <v-card class="h-100 d-flex flex-column justify-end pb-5"  >
+                <v-container class="pa-0">
+                    <v-card-title class="text-wrap" style="">{{ base[0].metadata.title }}</v-card-title>
+                    <v-card-subtitle>{{ base[0].metadata.author }}</v-card-subtitle>
+                    <v-card-subtitle>{{ timeformat().format(new Date(base[0].metadata.date)) }}</v-card-subtitle>
+                </v-container>
+            </v-card>
+        </div>
+        <div class="div2">
+            <v-card class="h-100 d-flex flex-column pt-5">
+                <v-card-title class="text-wrap text-body-1 " style="">{{ base[1].metadata.title }}</v-card-title>
+                <v-card-subtitle class="index-text-sm">{{ base[1].metadata.author }}</v-card-subtitle>
+                <v-card-subtitle class="index-text-sm">{{ timeformat().format(new Date(base[1].metadata.date))
+                    }}</v-card-subtitle>
+            </v-card>
+        </div>
+        <div class="div3">
+            <v-card class="h-100 d-flex flex-column pt-5">
+                <v-card-title class="text-wrap text-body-1" style="">{{ base[2].metadata.title }}</v-card-title>
+                <v-card-subtitle class="index-text-sm">{{ base[2].metadata.author }}</v-card-subtitle>
+                <v-card-subtitle class="index-text-sm">{{ timeformat().format(new Date(base[2].metadata.date))
+                    }}</v-card-subtitle>
+            </v-card>
+        </div>
+        <div class="div4">
+            <v-card class="h-100 d-flex flex-column justify-end pb-5">
+                <v-card-title class="text-wrap" style="">{{ base[3].metadata.title }}</v-card-title>
+                <v-card-subtitle class="index-text-sm">{{ base[3].metadata.author }}</v-card-subtitle>
+                <v-card-subtitle class="index-text-sm">{{ timeformat().format(new Date(base[3].metadata.date))
+                    }}</v-card-subtitle>
+            </v-card>
+        </div>
+        <div class="div5">
+            <v-card class="h-100 d-flex flex-column pt-5">
+                <v-card-title class="text-wrap text-body-1">{{ base[4].metadata.title }}</v-card-title>
+                <v-card-subtitle class="index-text-sm">{{ base[4].metadata.author }}</v-card-subtitle>
+                <v-card-subtitle class="index-text-sm">{{ timeformat().format(new Date(base[4].metadata.date))
+                    }}</v-card-subtitle>
+            </v-card>
+        </div>
+        <div class="div6">
+            <v-card class="h-100 d-flex flex-column justify-center">
+                <v-card-title class="text-wrap text-body-1" style="">{{ base[5].metadata.title }}</v-card-title>
+                <v-card-subtitle class="index-text-sm">{{ base[5].metadata.author }}</v-card-subtitle>
+                <v-card-subtitle class="index-text-sm">{{ timeformat().format(new Date(base[5].metadata.date))
+                    }}</v-card-subtitle>
+            </v-card>
+        </div>
+    </div>
+</template>
