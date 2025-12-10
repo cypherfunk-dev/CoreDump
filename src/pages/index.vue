@@ -1,22 +1,47 @@
 <template>
-    <v-container class="pa-4">
-        <v-row justify="center">
-            <v-col cols="12" md="8" lg="6">
-                <v-card>
-                    <v-card-title class="text-h6">Bienvenido a 2025</v-card-title>
-
+    <v-container class="wrapper-main-secondary" >
+        <v-row justify="center" >
+            <v-col>
+                <v-card class="main-article-index">
+                    <v-card-title>
+                        <h1>Welcome to Our Blog</h1>
+                    </v-card-title>
                     <v-card-text>
-                        Componente index simple con Vuetify.
-                        <div class="mt-3">Contador: {{ count }}</div>
-                    </v-card-text>
-
-                    <v-card-actions>
-                        <v-btn color="primary" @click="count++">Incrementar</v-btn>
-                        <v-btn text @click="reset">Reiniciar</v-btn>
-                        <v-spacer />
-                    </v-card-actions>
+                        <p>Discover the latest articles, insights, and stories from our community. Stay updated with new
+                            content and explore various topics that interest you.</p>
+                            ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                            ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                            ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                        </v-card-text>
                 </v-card>
             </v-col>
+
+            <v-col cols="4">
+                <v-card class="secondary-article-index">
+                    <v-card-title>
+                        <h1>Welcome to Our Blog</h1>
+                    </v-card-title>
+                    <v-card-text>
+                        <p>Discover the latest articles, insights, and stories from our community. Stay updated with new
+                            content and explore various topics that interest you.</p>
+                    </v-card-text>
+                </v-card>
+
+                <v-card class="secondary-article-index">
+                    <v-card-title>
+                        <h1>Welcome to Our Blog</h1>
+                    </v-card-title>
+                    <v-card-text>
+                        <p>Discover the latest articles, insights, and stories from our community. Stay updated with new
+                            content and explore various topics that interest you.</p>
+                    </v-card-text>
+                </v-card>
+
+
+
+            </v-col>
+
+
         </v-row>
     </v-container>
 </template>
