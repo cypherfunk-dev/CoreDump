@@ -4,7 +4,8 @@ import timeformat from '@/utils/dateparser.ts'
 
 </script>
 
-<template>
+<template >
+    <div class="index-container">
     <div class="parent">
         <div class="div1">
             <v-card class="h-100 d-flex flex-column justify-end pb-5"  >
@@ -51,5 +52,6 @@ import timeformat from '@/utils/dateparser.ts'
                     }}</v-card-subtitle>
             </v-card>
         </div>
+    </div>
     </div>
 </template>
