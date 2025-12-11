@@ -119,14 +119,14 @@ watch(
                             <span v-for="tag in metadatatags" :key="tag"> {{ '#' + tag + ' ' }} </span><br />
                         </div>
                     </div>
-                    <div v-if="(Object.keys(metadata).length === 0) || Object.keys(metadata)[0] === ''">
+                    <div v-if="((Object.keys(metadata).length === 0) && !ui.loading) || Object.keys(metadata)[0] === ''">
                         <em>No metadata available.</em>
                     </div>
                 </div>
             </div>
             <v-progress-circular color="primary" indeterminate v-show="ui.loading === true" />
                 
-                <article v-show="ui.loading === false" v-html="htmlContent" />
+                <article class="markdawn-content" v-show="ui.loading === false" v-html="htmlContent" />
         </div>
     </v-container>
 </template>
