@@ -68,10 +68,8 @@ const loadAndProcessContent = async (year: string, slug: string) => {
         const { metadata: extractedMetadata, text, tags } = extractMetadata(content);
         metadata.value = extractedMetadata;
         metadatatags.value = tags;
-        console.log('Extracted Metadata:', metadata);
         htmlContent.value = md.render(text);
     } catch (error) {
-        console.error('Error fetching the markdown file:', error);
     }
 };
 
@@ -83,10 +81,8 @@ watch(
         const newSlug = newParams.slug as string;
         if (newYear && newSlug) {
             ui.onloading(true);
-            console.log('Loading article:', newYear, newSlug);
             loadAndProcessContent(newYear, newSlug).finally(() => {
                 ui.onloading(false);
-                console.log('Article loaded.');
             });
         }
     },
