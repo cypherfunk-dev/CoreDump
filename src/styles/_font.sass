@@ -1,0 +1,11 @@
+
+// Este parcial define una mezcla para incluir fuentes personalizadas separando la definición de la fuente.
+@mixin font-face($name, $path, $weight: normal, $style: normal)
+    @font-face
+        font-family: $name
+        font-weight: $weight
+        font-style: $style
+        font-display: swap
+        src: url('#{$path}.woff2') format('woff2'), url('#{$path}.woff') format('woff'), url('#{$path}.ttf') format('truetype')
+
+@include font-face('Montserrat', '\fonts\Montserrat\Montserrat-VariableFont_wght.ttf', normal, normal)

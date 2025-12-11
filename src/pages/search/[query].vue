@@ -8,7 +8,7 @@ const route = useRoute();
 const query = route.params.query as string;
 </script>
 
-<template>
+<template >
     <SearchBar />
     {{ ui.queryChange(query).length }} results found for "{{ query }}"
     <SearchResults />

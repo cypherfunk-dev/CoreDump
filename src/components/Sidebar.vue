@@ -4,6 +4,7 @@ import { ref } from 'vue';
 import database from '../database/db.json';
 import usersdb from '../database/authors.json';
 import timeformat from '../utils/dateparser';
+import type { RouterLink } from 'vue-router';
 
 const user = ref(usersdb[0]);
 const ui = useUiStore();
@@ -42,14 +43,33 @@ const ui = useUiStore();
       <v-card-title class="sidebar-title ">Nube de tags</v-card-title>
       <v-card-text>
         <v-chip-group column>
-          <v-chip class="ma-1 tag">#Backend</v-chip>
-          <v-chip class="ma-1 tag">#Frontend</v-chip>
-          <v-chip class="ma-1 tag">#DevOps</v-chip>
-          <v-chip class="ma-1 tag">#Infraestructura</v-chip>
-          <v-chip class="ma-1 tag">#Bases de Datos</v-chip>
-          <v-chip class="ma-1 tag">#Seguridad</v-chip>
-          <v-chip class="ma-1 tag">#Redes</v-chip>
-          <v-chip class="ma-1 tag">#Sistemas Operativos</v-chip>
+          <router-link :to="{ path: '/search/cero_day' }">
+          <v-chip class="ma-1 tag">#cero_day</v-chip>
+          </router-link>
+          <router-link :to="{ path: '/search/seguridad' }">
+          <v-chip class="ma-1 tag">#seguridad </v-chip>
+          </router-link>
+          <router-link :to="{ path: '/search/malware' }">
+          <v-chip class="ma-1 tag">#malware </v-chip>
+          </router-link>
+          <router-link :to="{ path: '/search/analisis' }">
+          <v-chip class="ma-1 tag">#analisis </v-chip>
+          </router-link>
+          <router-link :to="{ path: '/search/configuracion' }">
+          <v-chip class="ma-1 tag">#configuracion </v-chip>
+          </router-link>
+          <router-link :to="{ path: '/search/humor' }">
+          <v-chip class="ma-1 tag">#humor </v-chip>
+          </router-link>
+          <router-link :to="{ path: '/search/servidor ' }">
+          <v-chip class="ma-1 tag">#servidor  </v-chip>
+          </router-link>
+          <router-link :to="{ path: '/search/entropía ' }">
+          <v-chip class="ma-1 tag">#entropía  </v-chip>
+          </router-link>
+          <router-link :to="{ path: '/search/destrucción_ineficiente' }">
+          <v-chip class="ma-1 tag">#destrucción_ineficiente </v-chip>
+          </router-link>
         </v-chip-group>
       </v-card-text>
     </v-card>

@@ -2,9 +2,27 @@
 import { useUiStore } from '../stores/ui';
 import siteTexts from '../database/site-texts.json';
 import { watch, ref, nextTick } from 'vue';
-
+import { computed,  } from 'vue';
+import { useRoute } from 'vue-router';
 const ui = useUiStore();
 const searchField = ref(null);
+const route = useRoute();
+const isSearchPage = computed (() => {
+    return route.fullPath.startsWith('/search/');
+});
+
+
+watch(isSearchPage, (newValue) => {
+    if (newValue) {
+        console.log(newValue);
+        nextTick(() => {
+            (searchField.value as any)?.focus();
+        });
+    }
+}, { immediate: true }
+);
+
+
 
 watch(() => ui.searchbar, (newValue) => {
     if (newValue) {
@@ -26,7 +44,7 @@ watch(() => ui.searchbar, (newValue) => {
             </RouterLink>
         </v-app-bar-title>
         <v-spacer></v-spacer>
-        <v-btn icon @click.stop="ui.toggleSearch" class="mr-1">
+        <v-btn icon @click.stop="ui.toggleSearch" class="mr-1" v-if="!isSearchPage">
             <v-icon>mdi-magnify</v-icon>
         </v-btn>
 

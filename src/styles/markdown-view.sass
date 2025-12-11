@@ -1,5 +1,7 @@
+@use 'font'
 $color-primario: #3a7569
 $fuente-principal: 'Inter', sans-serif
+$fuente-secundaria: 'Montserrat', sans-serif
 $text-primary: #ddddddff
 $text-secondary: #8f8f8fff
 $text-dark: #212121
@@ -9,6 +11,7 @@ $alternative3: #F0F7EE
 $alternative4: #AFB3F7
 $alternative5: #C1BCAC
 $alternative6: #96c5f727
+
 
 html
   overflow-y: auto
@@ -251,5 +254,25 @@ html
     grid-area: 6 / 1 / 7 / 2
 
 @media screen and ( max-width: 615px)
-    .parent
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr))
+  .parent
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr))
+
+// Cards colors
+
+.div1-card
+  background-color: #907f9f
+  font-family: $fuente-principal
+.div2-card
+  background-color: #212121
+.div3-card
+  background-color: #5b9279
+  font-family: $fuente-secundaria
+  
+.div4-card
+  background-color: #212121
+  font-family: $fuente-principal
+
+.div5-card
+  background-color: #748cab
+.div6-card
+  background-color: #d7263d

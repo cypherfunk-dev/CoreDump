@@ -1,12 +1,8 @@
 <script lang="ts" setup>
 import { useUiStore } from '../stores/ui';
 import siteTexts from '../database/site-texts.json';
-import { ref } from 'vue';
-import dateParser from '../utils/dateparser';
 const ui = useUiStore();
-const searchField = ref(null);
 import SearchResults from './SearchResults.vue';
-
 
 </script>
 <template>

@@ -16,3 +16,4 @@ import ModalSearch from './components/ModalSearch.vue';
     <Footer />
   </v-app>
 </template>
+

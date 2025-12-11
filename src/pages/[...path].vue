@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import image from '../assets/404.jpg';
-import siteTexts from '../database/site-texts.json';
 </script>
 
 <template>

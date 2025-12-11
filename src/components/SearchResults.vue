@@ -10,7 +10,8 @@ import dateParser from '../utils/dateparser';
 
 
 <template>
-    <v-card>
+<v-container  >
+    <v-card >
             <v-card-title>
                 <VTextField ref="searchField" v-model="ui.search" density="compact"
                     :placeholder="siteTexts.searchPlaceholder" variant="solo-filled" flat single-line hide-details
@@ -39,4 +40,7 @@ import dateParser from '../utils/dateparser';
                         
         </v-card>
         </div>
+    </v-container>
+
+
 </template>
