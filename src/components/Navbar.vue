@@ -70,6 +70,21 @@ watch(() => ui.searchbar, (newValue) => {
   letter-spacing: 0.15em !important;
   font-size: 1.15rem !important;
   font-weight: 700;
+  white-space: normal !important;
+  overflow: visible !important;
+  max-width: none !important;
+  word-break: break-word !important;
+}
+@media screen and (max-width: 404px) {
+  .v-app-bar-title .spacing-title {
+    font-size: 0.9rem !important;
+    letter-spacing: 0.1em !important;
+      white-space: nowrap !important;
+  overflow: visible !important;
+  max-width: none !important;
+  word-break: break-word !important;
+  }
+  
 }
 
 /* Cursor verde animado */

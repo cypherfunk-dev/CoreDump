@@ -10,7 +10,6 @@ const random = Math.floor(Math.random()*siteTexts.slogans.length);
   <div class="blog-index">
     <!-- Masthead / Header -->
     <header class="blog-masthead">
-      <h1 class="masthead-title">{{ siteTexts.siteName || 'El Diario Tech' }}</h1>
       <p class="masthead-tagline">{{ siteTexts.slogans[random] }}</p>
       <div class="masthead-divider"></div>
     </header>
@@ -137,13 +136,12 @@ const random = Math.floor(Math.random()*siteTexts.slogans.length);
   padding: 0 24px 48px;
 }
 
-/* ─────────────────────────────────────────────────────────────
-   MASTHEAD / HEADER
-   ───────────────────────────────────────────────────────────── */
 .blog-masthead {
   text-align: center;
   padding: 48px 16px 32px;
   margin-bottom: 8px;
+  background-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.8) 100%),url('@/assets/banner.png');
+  background-size: cover;
 }
 
 .masthead-title {
