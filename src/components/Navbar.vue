@@ -55,8 +55,50 @@ watch(() => ui.searchbar, (newValue) => {
 </template>
 
 <style scoped>
-/* Estilos para espaciar las letras del título */
+/* ═══════════════════════════════════════════════════════════
+   NAVBAR - Estilos refinados
+   ═══════════════════════════════════════════════════════════ */
+
+.v-app-bar {
+  backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(18, 18, 18, 0.85) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
 .v-app-bar-title .spacing-title {
-    letter-spacing: 0.2em !important;
+  font-family: 'Montserrat', sans-serif;
+  letter-spacing: 0.15em !important;
+  font-size: 1.15rem !important;
+  font-weight: 700;
+}
+
+/* Cursor verde animado */
+.text-green-accent-3 {
+  animation: blink 1.2s step-end infinite;
+  font-size: 1.1rem;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Botones de acción */
+:deep(.v-btn--icon) {
+  transition: background-color 0.25s ease, transform 0.2s ease;
+}
+
+:deep(.v-btn--icon:hover) {
+  background-color: rgba(105, 240, 174, 0.12) !important;
+  transform: scale(1.08);
+}
+
+:deep(.v-btn--icon .v-icon) {
+  color: rgba(255, 255, 255, 0.8);
+  transition: color 0.2s ease;
+}
+
+:deep(.v-btn--icon:hover .v-icon) {
+  color: #69F0AE;
 }
 </style>

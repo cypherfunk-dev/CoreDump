@@ -3,11 +3,15 @@ import { useUiStore } from '../stores/ui';
 import { ref } from 'vue';
 import database from '../database/db.json';
 import usersdb from '../database/authors.json';
+import siteSlogans from '../database/site-texts.json';
 import timeformat from '../utils/dateparser';
-import type { RouterLink } from 'vue-router';
 
 const user = ref(usersdb[0]);
 const ui = useUiStore();
+const slogans = ref("");
+const random = Math.floor(Math.random()*siteSlogans.slogans.length);
+console.log(random)
+
 </script>
 
 <template>
@@ -16,7 +20,7 @@ const ui = useUiStore();
       <v-img :width="300" aspect-ratio="16/9" cover class="mx-auto" src="../assets/avatar.png"></v-img>
       <v-list-item class="text-center">
         <v-list-item-title class="sidebar-title ">{{ user?.name }}</v-list-item-title>
-        <p class="sidebar-subtitle">{{ user?.bio }}</p>
+        <p class="sidebar-subtitle">{{ siteSlogans.slogans[random] }}</p>
         <v-container class="social-icons">
           <v-btn key="mdi-linkedin" v-if="user?.linkedin" :href="`https://linkedin.com/in/${user?.linkedin}`" icon
             class="mx-2" color="blue darken-1" target="_blank">

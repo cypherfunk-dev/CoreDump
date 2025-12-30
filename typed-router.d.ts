@@ -44,6 +44,13 @@ declare module 'vue-router/auto-routes' {
       { year: ParamValue<false>, slug: ParamValue<false> },
       | never
     >,
+    '/search/': RouteRecordInfo<
+      '/search/',
+      '/search',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
     '/search/[query]': RouteRecordInfo<
       '/search/[query]',
       '/search/:query',
@@ -79,6 +86,12 @@ declare module 'vue-router/auto-routes' {
     'src/pages/articles/[year]/[slug].vue': {
       routes:
         | '/articles/[year]/[slug]'
+      views:
+        | never
+    }
+    'src/pages/search/index.vue': {
+      routes:
+        | '/search/'
       views:
         | never
     }

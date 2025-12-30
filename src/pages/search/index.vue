@@ -1,40 +1,19 @@
 <script lang="ts" setup>
-import { useUiStore, availableCategories, defaultSearchOptions, type AdvancedSearchOptions } from '../../stores/ui';
-import { useRoute, useRouter } from 'vue-router';
-import { computed, watch, onMounted, ref } from 'vue';
+import { useUiStore, availableCategories, type AdvancedSearchOptions } from '../../stores/ui';
+import { useRouter } from 'vue-router';
+import { computed, ref } from 'vue';
 import siteTexts from '@/database/site-texts.json';
-import dateParser from '@/utils/dateparser';
 
 const ui = useUiStore();
-const route = useRoute();
 const router = useRouter();
 
 // Show/hide advanced options panel
-const showAdvanced = ref(false);
+const showAdvanced = ref(true); // Start open since no query yet
 
-// Reactive query from URL
-const query = computed(() => decodeURIComponent(route.params.query as string || ''));
-
-// Search results computed from query using advanced search
-const results = computed(() => {
-  if (!query.value) return [];
-  return ui.advancedSearch(query.value);
-});
-
-// Suggestions for autocomplete
-const suggestions = computed(() => {
-  return ui.getSuggestions(ui.search);
-});
-
-// Sync search input with URL query
-watch(query, (newQuery) => {
-  ui.search = newQuery;
-}, { immediate: true });
-
-// Handle new search from input
+// Handle search
 function handleSearch() {
-  if (ui.search && ui.search !== query.value) {
-    router.push(`/search/${encodeURIComponent(ui.search)}`);
+  if (ui.search && ui.search.trim()) {
+    router.push(`/search/${encodeURIComponent(ui.search.trim())}`);
   }
 }
 
@@ -43,7 +22,7 @@ function toggleSearchField(field: 'title' | 'tags' | 'abstract' | 'category' | '
   const fields = [...ui.advancedOptions.searchFields];
   const idx = fields.indexOf(field);
   if (idx > -1) {
-    if (fields.length > 1) fields.splice(idx, 1); // Keep at least one field
+    if (fields.length > 1) fields.splice(idx, 1);
   } else {
     fields.push(field);
   }
@@ -84,8 +63,9 @@ const sortOptions = [
   { value: 'title', label: 'Alfabético', icon: 'mdi-sort-alphabetical-ascending' }
 ];
 
-onMounted(() => {
-  ui.search = query.value;
+// Suggestions
+const suggestions = computed(() => {
+  return ui.getSuggestions(ui.search);
 });
 </script>
 
@@ -94,6 +74,8 @@ onMounted(() => {
     <!-- Search Header -->
     <div class="search-header">
       <h1 class="search-page-title">{{ siteTexts.advancedSearch || 'Búsqueda Avanzada' }}</h1>
+      <p class="search-subtitle">Encuentra artículos, tutoriales y más en nuestro archivo</p>
+      
       <div class="search-input-wrapper">
         <v-text-field
           v-model="ui.search"
@@ -104,16 +86,17 @@ onMounted(() => {
           clearable
           prepend-inner-icon="mdi-magnify"
           class="search-input"
+          autofocus
           @keyup.enter="handleSearch"
         />
-        <v-btn color="primary" class="search-btn" @click="handleSearch">
+        <v-btn color="primary" class="search-btn" @click="handleSearch" :disabled="!ui.search?.trim()">
           <v-icon left>mdi-magnify</v-icon>
           Buscar
         </v-btn>
       </div>
-      
+
       <!-- Suggestions -->
-      <div class="suggestions-row" v-if="suggestions.length && ui.search.length >= 2 && ui.search !== query">
+      <div class="suggestions-row" v-if="suggestions.length && ui.search?.length >= 2">
         <span class="suggestions-label">Sugerencias:</span>
         <v-chip
           v-for="sug in suggestions"
@@ -254,61 +237,24 @@ onMounted(() => {
       </div>
     </v-expand-transition>
 
-    <!-- Results Summary -->
-    <div class="results-summary" v-if="query">
-      <span v-if="results.length">
-        {{ results.length }} {{ results.length === 1 ? 'resultado' : 'resultados' }} para "<strong>{{ query }}</strong>"
-        <span v-if="ui.advancedOptions.categoryFilter" class="filter-badge">
-          en {{ ui.advancedOptions.categoryFilter }}
-        </span>
-      </span>
-      <span v-else class="no-results">
-        {{ siteTexts.noResultsFound || 'No se encontraron resultados' }} para "<strong>{{ query }}</strong>"
-      </span>
-    </div>
-
-    <!-- Results Grid -->
-    <div class="search-results-grid" v-if="results.length">
-      <router-link
-        v-for="result in results"
-        :key="result.id"
-        :to="result.slug"
-        class="search-result-card-link"
-      >
-        <article class="search-result-card">
-          <div class="result-content">
-            <span class="result-category">{{ result['metadata.category'] || 'General' }}</span>
-            <h3 class="result-title">{{ result['metadata.title'] }}</h3>
-            <p class="result-abstract">{{ result['metadata.abstract'] }}</p>
-            <div class="result-meta">
-              <span class="result-author" v-if="result['metadata.author']">
-                <v-icon size="x-small">mdi-account</v-icon>
-                {{ result['metadata.author'] }}
-              </span>
-              <span class="result-date">
-                <v-icon size="x-small">mdi-calendar</v-icon>
-                {{ dateParser().format(new Date(result['metadata.date'])) }}
-              </span>
-              <span class="result-score" v-if="result.score && ui.advancedOptions.sortBy === 'relevance'">
-                <v-icon size="x-small">mdi-star</v-icon>
-                {{ Math.round(result.score * 10) / 10 }}
-              </span>
-            </div>
-          </div>
-        </article>
-      </router-link>
-    </div>
-
-    <!-- Empty State -->
-    <div class="search-empty-state" v-else-if="query && !results.length">
-      <v-icon size="64" color="grey">mdi-magnify-close</v-icon>
-      <p>Intenta con otros términos de búsqueda</p>
-      <p class="empty-hint" v-if="ui.advancedOptions.fuzzyLevel === 'exact'">
-        Tip: Prueba cambiar a búsqueda "Normal" o "Amplia" para más resultados
+    <!-- Empty State - No search yet -->
+    <div class="search-welcome">
+      <v-icon size="80" color="grey-darken-1">mdi-text-search</v-icon>
+      <h2 class="welcome-title">¿Qué estás buscando?</h2>
+      <p class="welcome-text">
+        Ingresa un término de búsqueda para encontrar artículos, tutoriales y más.
+        <br>
+        Usa las opciones avanzadas para refinar tus resultados.
       </p>
-      <router-link to="/" class="back-home-link">
-        <v-btn variant="outlined">{{ siteTexts.goBackHome || 'Volver al Inicio' }}</v-btn>
-      </router-link>
+      <div class="quick-tips">
+        <h3 class="tips-title">Tips de búsqueda:</h3>
+        <ul class="tips-list">
+          <li><strong>Búsqueda exacta:</strong> Encuentra coincidencias precisas</li>
+          <li><strong>Búsqueda amplia:</strong> Tolera errores tipográficos</li>
+          <li><strong>Combinar con AND:</strong> Todos los términos deben aparecer</li>
+          <li><strong>Filtrar por categoría:</strong> Limita resultados a un tema específico</li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>
@@ -335,6 +281,12 @@ $search-text-muted: #a0a0a0
   font-size: 2rem
   font-weight: 700
   color: $search-text
+  margin-bottom: 8px
+
+.search-subtitle
+  font-family: 'Inter', sans-serif
+  font-size: 1rem
+  color: $search-text-muted
   margin-bottom: 24px
 
 .search-input-wrapper
@@ -440,122 +392,47 @@ $search-text-muted: #a0a0a0
   padding-top: 16px
   margin-top: 8px
 
-.filter-badge
-  background: rgba($search-accent, 0.2)
-  color: $search-accent
-  padding: 2px 8px
-  border-radius: 4px
-  font-size: 0.85rem
-  margin-left: 8px
+// Welcome/Empty State
+.search-welcome
+  max-width: 600px
+  margin: 40px auto
+  text-align: center
+  color: $search-text-muted
 
-.results-summary
-  max-width: 800px
-  margin: 0 auto 24px
+.welcome-title
+  font-family: 'Montserrat', sans-serif
+  font-size: 1.5rem
+  font-weight: 600
+  color: $search-text
+  margin: 20px 0 12px
+
+.welcome-text
   font-family: 'Inter', sans-serif
   font-size: 1rem
+  line-height: 1.6
+  margin-bottom: 32px
+
+.quick-tips
+  background: $search-surface
+  border-radius: 12px
+  padding: 24px
+  text-align: left
+
+.tips-title
+  font-family: 'Montserrat', sans-serif
+  font-size: 1rem
+  font-weight: 600
+  color: $search-text
+  margin-bottom: 12px
+
+.tips-list
+  font-family: 'Inter', sans-serif
+  font-size: 0.9rem
+  line-height: 1.8
+  padding-left: 20px
   color: $search-text-muted
-  text-align: center
   strong
     color: $search-accent
-
-.no-results
-  color: #e57373
-
-.search-results-grid
-  max-width: 900px
-  margin: 0 auto
-  display: flex
-  flex-direction: column
-  gap: 16px
-
-.search-result-card-link
-  text-decoration: none
-  color: inherit
-
-.search-result-card
-  background: $search-surface
-  border-radius: 10px
-  padding: 24px
-  transition: transform 0.2s ease, box-shadow 0.2s ease
-  border-left: 4px solid $search-accent
-  &:hover
-    transform: translateX(4px)
-    box-shadow: 0 8px 24px rgba(0,0,0,0.3)
-
-.result-content
-  display: flex
-  flex-direction: column
-  gap: 8px
-
-.result-category
-  font-family: 'Inter', sans-serif
-  font-size: 0.7rem
-  font-weight: 700
-  text-transform: uppercase
-  letter-spacing: 1.2px
-  color: $search-accent
-
-.result-title
-  font-family: 'Montserrat', sans-serif
-  font-size: 1.25rem
-  font-weight: 700
-  color: $search-text
-  margin: 0
-  line-height: 1.3
-
-.result-abstract
-  font-family: 'Inter', sans-serif
-  font-size: 0.95rem
-  line-height: 1.5
-  color: $search-text-muted
-  margin: 0
-  display: -webkit-box
-  -webkit-line-clamp: 2
-  -webkit-box-orient: vertical
-  overflow: hidden
-
-.result-meta
-  display: flex
-  align-items: center
-  gap: 16px
-  font-family: 'Inter', sans-serif
-  font-size: 0.8rem
-  color: $search-text-muted
-  margin-top: 8px
-
-.result-author
-  display: flex
-  align-items: center
-  gap: 4px
-
-.result-date
-  display: flex
-  align-items: center
-  gap: 4px
-
-.result-score
-  color: $search-accent
-  font-weight: 600
-  display: flex
-  align-items: center
-  gap: 4px
-
-.search-empty-state
-  max-width: 400px
-  margin: 60px auto
-  text-align: center
-  color: $search-text-muted
-  p
-    margin: 16px 0 24px
-    font-size: 1rem
-
-.empty-hint
-  font-size: 0.9rem
-  color: $search-accent
-  font-style: italic
-
-.back-home-link
-  text-decoration: none
 
 @media screen and (max-width: 600px)
   .search-page
@@ -566,10 +443,6 @@ $search-text-muted: #a0a0a0
     flex-direction: column
   .search-btn
     width: 100%
-  .search-result-card
-    padding: 16px
-  .result-title
-    font-size: 1.1rem
   .advanced-panel-content
     padding: 16px
   .fuzzy-options, .sort-options
@@ -581,4 +454,6 @@ $search-text-muted: #a0a0a0
     align-items: flex-start
   .category-select
     max-width: 100%
+  .quick-tips
+    padding: 16px
 </style>

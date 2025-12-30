@@ -1,6 +1,6 @@
 {
-  "siteName": ".docum",
-  "footerText": "© 2025 .txt del soporte.",
+  "siteName": "CoreDump.md",
+  "footerText": "© 2025 CoreDump - Algunos derechos reservados.",
   "readMore": "Leer más",
   "searchPlaceholder": "Buscar comando, error o solución...",
   "latestPosts": "Artículos Recientes",
@@ -10,5 +10,13 @@
   "searchInstructions": "Ingrese un término de búsqueda para encontrar comandos, errores o soluciones.",
   "advancedSearch": "Búsqueda Avanzada",
   "searchResultsCount": "Se encontraron {count} resultados.",
-  "goBackHome": "Volver al Inicio"
+  "goBackHome": "Volver al Inicio",
+  "slogans": [
+    "Soporte técnico para máquinas. Soporte vital para usuarios.",
+    "Vaciando mi memoria antes del colapso total.",
+    "Documentando el caos. Si no está en Markdown, no sucedió.",
+    "Soportamos sistemas, toleramos personas.",
+    "Arreglando lo que las máquinas rompen y lo que los usuarios tocan.",
+    "Bitácora de errores críticos y soluciones improvisadas. Léase antes de reiniciar."
+  ]
 }
