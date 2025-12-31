@@ -56,7 +56,7 @@ const random = Math.floor(Math.random() * siteTexts.slogans.length);
         <div class="bento-image-wrapper">
           <v-img :src="base[2].metadata.image" :alt="base[2].metadata.title" class="bento-image" cover />
         </div>
-        <div class="bento-overlay bento-overlay-accent">
+        <div class="bento-overlay">
           <span class="bento-category">{{ base[2].metadata.category }}</span>
           <h3 class="bento-title bento-title-sm">{{ base[2].metadata.title }}</h3>
 
@@ -78,7 +78,6 @@ const random = Math.floor(Math.random() * siteTexts.slogans.length);
             <span class="bento-category">{{ base[3].metadata.category }}</span>
           </div>
           <h3 class="bento-title bento-title-md">{{ base[3].metadata.title }}</h3>
-          <p class="bento-abstract bento-abstract-sm">{{ base[3].metadata.abstract }}</p>
           <div class="bento-meta">
             <span class="bento-author">{{ base[3].metadata.author }}</span>
             <span class="meta-dot">•</span>
@@ -97,7 +96,6 @@ const random = Math.floor(Math.random() * siteTexts.slogans.length);
             <span class="bento-category">{{ base[4].metadata.category }}</span>
           </div>
           <h3 class="bento-title bento-title-md">{{ base[4].metadata.title }}</h3>
-          <p class="bento-abstract bento-abstract-sm">{{ base[4].metadata.abstract }}</p>
           <div class="bento-meta">
             <span class="bento-author">{{ base[4].metadata.author }}</span>
             <span class="meta-dot">•</span>
@@ -111,7 +109,7 @@ const random = Math.floor(Math.random() * siteTexts.slogans.length);
         <div class="bento-image-wrapper">
           <v-img :src="base[5].metadata.image" :alt="base[5].metadata.title" class="bento-image" cover />
         </div>
-        <div class="bento-overlay bento-overlay-accent-alt">
+        <div class="bento-overlay-alt">
           <span class="bento-category">{{ base[5].metadata.category }}</span>
           <h3 class="bento-title bento-title-sm">{{ base[5].metadata.title }}</h3>
 
@@ -290,15 +288,8 @@ const random = Math.floor(Math.random() * siteTexts.slogans.length);
       rgba(0, 0, 0, 0.8) 100%);
 }
 
-.bento-overlay-accent {
-  background: linear-gradient(to top,
-      rgba(16, 185, 129, 0.9) 0%,
-      rgba(16, 185, 129, 0.6) 40%,
-      rgba(16, 185, 129, 0.2) 70%,
-      transparent 100%);
-}
 
-.bento-overlay-accent-alt {
+-alt {
   background: linear-gradient(to top,
       rgba(99, 102, 241, 0.88) 0%,
       rgba(99, 102, 241, 0.55) 45%,
@@ -348,23 +339,7 @@ const random = Math.floor(Math.random() * siteTexts.slogans.length);
   font-size: clamp(0.95rem, 1.8vw, 1.15rem);
 }
 
-.bento-abstract {
-  font-family: 'Inter', sans-serif;
-  font-size: 0.9rem;
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.75);
-  line-height: 1.55;
-  margin: 0 0 14px;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
 
-.bento-abstract-sm {
-  font-size: 0.8rem;
-  -webkit-line-clamp: 2;
-}
 
 /* ─────────────────────────────────────────────────────────────
    META - Autor y fecha
@@ -511,10 +486,6 @@ const random = Math.floor(Math.random() * siteTexts.slogans.length);
     padding: 4px 10px;
   }
 
-  .bento-abstract {
-    font-size: 0.82rem;
-    -webkit-line-clamp: 2;
-  }
 
   .bento-meta {
     font-size: 0.7rem;
