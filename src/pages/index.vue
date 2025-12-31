@@ -2,7 +2,7 @@
 import base from '@/database/db.json'
 import timeformat from '@/utils/dateparser.ts'
 import siteTexts from '@/database/site-texts.json'
-const random = Math.floor(Math.random()*siteTexts.slogans.length);
+const random = Math.floor(Math.random() * siteTexts.slogans.length);
 
 </script>
 
@@ -26,7 +26,6 @@ const random = Math.floor(Math.random()*siteTexts.slogans.length);
             <span class="bento-category">{{ base[0].metadata.category }}</span>
           </div>
           <h2 class="bento-title bento-title-lg">{{ base[0].metadata.title }}</h2>
-          <p class="bento-abstract">{{ base[0].metadata.abstract }}</p>
           <div class="bento-meta">
             <span class="bento-author">{{ base[0].metadata.author }}</span>
             <span class="meta-dot">•</span>
@@ -60,12 +59,13 @@ const random = Math.floor(Math.random()*siteTexts.slogans.length);
         <div class="bento-overlay bento-overlay-accent">
           <span class="bento-category">{{ base[2].metadata.category }}</span>
           <h3 class="bento-title bento-title-sm">{{ base[2].metadata.title }}</h3>
-        </div>
+
         <div class="bento-meta">
-            <span class="bento-author">{{ base[2].metadata.author }}</span>
-            <span class="meta-dot">•</span>
-            <span class="bento-date">{{ timeformat().format(new Date(base[2].metadata.date)) }}</span>
-          </div>
+          <span class="bento-author">{{ base[2].metadata.author }}</span>
+          <span class="meta-dot">•</span>
+          <span class="bento-date">{{ timeformat().format(new Date(base[2].metadata.date)) }}</span>
+        </div>
+                </div>
       </router-link>
 
       <!-- Wide Card -->
@@ -114,7 +114,6 @@ const random = Math.floor(Math.random()*siteTexts.slogans.length);
         <div class="bento-overlay bento-overlay-accent-alt">
           <span class="bento-category">{{ base[5].metadata.category }}</span>
           <h3 class="bento-title bento-title-sm">{{ base[5].metadata.title }}</h3>
-          <p class="bento-abstract bento-abstract-sm">{{ base[5].metadata.abstract }}</p>
 
           <div class="bento-meta">
             <span class="bento-author">{{ base[5].metadata.author }}</span>
@@ -128,7 +127,6 @@ const random = Math.floor(Math.random()*siteTexts.slogans.length);
 </template>
 
 <style scoped>
-
 .blog-index {
   width: 100%;
   max-width: 1400px;
@@ -140,7 +138,7 @@ const random = Math.floor(Math.random()*siteTexts.slogans.length);
   text-align: center;
   padding: 48px 16px 32px;
   margin-bottom: 8px;
-  background-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.8) 100%),url('@/assets/banner.png');
+  background-image: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.6) 100%), url('@/assets/banner.png');
   background-size: cover;
 }
 
@@ -184,12 +182,35 @@ const random = Math.floor(Math.random()*siteTexts.slogans.length);
 }
 
 /* Grid Areas */
-.bento-hero { grid-column: span 7; grid-row: span 2; }
-.bento-medium-1 { grid-column: span 5; grid-row: span 1; }
-.bento-small-1 { grid-column: span 5; grid-row: span 1; }
-.bento-wide { grid-column: span 8; grid-row: span 1; }
-.bento-medium-2 { grid-column: span 4; grid-row: span 1; }
-.bento-small-2 { grid-column: span 12; grid-row: span 1; }
+.bento-hero {
+  grid-column: span 7;
+  grid-row: span 2;
+}
+
+.bento-medium-1 {
+  grid-column: span 5;
+  grid-row: span 1;
+}
+
+.bento-small-1 {
+  grid-column: span 5;
+  grid-row: span 1;
+}
+
+.bento-wide {
+  grid-column: span 8;
+  grid-row: span 1;
+}
+
+.bento-medium-2 {
+  grid-column: span 4;
+  grid-row: span 1;
+}
+
+.bento-small-2 {
+  grid-column: span 12;
+  grid-row: span 1;
+}
 
 /* ─────────────────────────────────────────────────────────────
    BENTO CARDS - Base Styles
@@ -203,13 +224,13 @@ const random = Math.floor(Math.random()*siteTexts.slogans.length);
   display: block;
   background: rgba(30, 30, 30, 0.6);
   transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-              box-shadow 0.35s ease;
+    box-shadow 0.35s ease;
 }
 
 .bento-card:hover {
   transform: translateY(-4px) scale(1.01);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35),
-              0 0 0 1px rgba(105, 240, 174, 0.15);
+    0 0 0 1px rgba(105, 240, 174, 0.15);
 }
 
 .bento-card:active {
@@ -228,7 +249,7 @@ const random = Math.floor(Math.random()*siteTexts.slogans.length);
   height: 100%;
   object-fit: cover;
   transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-              filter 0.4s ease;
+    filter 0.4s ease;
 }
 
 .bento-card:hover .bento-image {
@@ -247,52 +268,42 @@ const random = Math.floor(Math.random()*siteTexts.slogans.length);
   flex-direction: column;
   justify-content: flex-end;
   padding: 24px;
-  background: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0.85) 0%,
-    rgba(0, 0, 0, 0.5) 40%,
-    rgba(0, 0, 0, 0.1) 70%,
-    transparent 100%
-  );
+  background: linear-gradient(to top,
+      rgba(0, 0, 0, 0.85) 0%,
+      rgba(0, 0, 0, 0.5) 40%,
+      rgba(0, 0, 0, 0.1) 70%,
+      transparent 100%);
 }
 
 .bento-overlay-dark {
-  background: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0.92) 0%,
-    rgba(0, 0, 0, 0.6) 35%,
-    rgba(0, 0, 0, 0.2) 60%,
-    transparent 100%
-  );
+  background: linear-gradient(to top,
+      rgba(0, 0, 0, 0.92) 0%,
+      rgba(0, 0, 0, 0.6) 35%,
+      rgba(0, 0, 0, 0.2) 60%,
+      transparent 100%);
 }
 
 .bento-overlay-gradient {
-  background: linear-gradient(
-    135deg,
-    rgba(0, 0, 0, 0.7) 0%,
-    rgba(0, 0, 0, 0.5) 50%,
-    rgba(0, 0, 0, 0.8) 100%
-  );
+  background: linear-gradient(135deg,
+      rgba(0, 0, 0, 0.7) 0%,
+      rgba(0, 0, 0, 0.5) 50%,
+      rgba(0, 0, 0, 0.8) 100%);
 }
 
 .bento-overlay-accent {
-  background: linear-gradient(
-    to top,
-    rgba(16, 185, 129, 0.9) 0%,
-    rgba(16, 185, 129, 0.6) 40%,
-    rgba(16, 185, 129, 0.2) 70%,
-    transparent 100%
-  );
+  background: linear-gradient(to top,
+      rgba(16, 185, 129, 0.9) 0%,
+      rgba(16, 185, 129, 0.6) 40%,
+      rgba(16, 185, 129, 0.2) 70%,
+      transparent 100%);
 }
 
 .bento-overlay-accent-alt {
-  background: linear-gradient(
-    to top,
-    rgba(99, 102, 241, 0.88) 0%,
-    rgba(99, 102, 241, 0.55) 45%,
-    rgba(99, 102, 241, 0.15) 75%,
-    transparent 100%
-  );
+  background: linear-gradient(to top,
+      rgba(99, 102, 241, 0.88) 0%,
+      rgba(99, 102, 241, 0.55) 45%,
+      rgba(99, 102, 241, 0.15) 75%,
+      transparent 100%);
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -398,12 +409,36 @@ const random = Math.floor(Math.random()*siteTexts.slogans.length);
     gap: 14px;
   }
 
-  .bento-hero { grid-column: span 6; grid-row: span 1; min-height: 300px; }
-  .bento-medium-1 { grid-column: span 3; min-height: 220px; }
-  .bento-small-1 { grid-column: span 3; min-height: 220px; }
-  .bento-wide { grid-column: span 6; min-height: 200px; }
-  .bento-medium-2 { grid-column: span 3; min-height: 200px; }
-  .bento-small-2 { grid-column: span 3; min-height: 200px; }
+  .bento-hero {
+    grid-column: span 6;
+    grid-row: span 1;
+    min-height: 300px;
+  }
+
+  .bento-medium-1 {
+    grid-column: span 3;
+    min-height: 220px;
+  }
+
+  .bento-small-1 {
+    grid-column: span 3;
+    min-height: 220px;
+  }
+
+  .bento-wide {
+    grid-column: span 6;
+    min-height: 200px;
+  }
+
+  .bento-medium-2 {
+    grid-column: span 3;
+    min-height: 200px;
+  }
+
+  .bento-small-2 {
+    grid-column: span 3;
+    min-height: 200px;
+  }
 
   .bento-overlay {
     padding: 20px;
@@ -521,6 +556,7 @@ const random = Math.floor(Math.random()*siteTexts.slogans.length);
     opacity: 0;
     transform: translateY(24px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -531,12 +567,29 @@ const random = Math.floor(Math.random()*siteTexts.slogans.length);
   animation: fadeSlideUp 0.6s ease-out backwards;
 }
 
-.bento-hero { animation-delay: 0.05s; }
-.bento-medium-1 { animation-delay: 0.12s; }
-.bento-small-1 { animation-delay: 0.18s; }
-.bento-wide { animation-delay: 0.24s; }
-.bento-medium-2 { animation-delay: 0.30s; }
-.bento-small-2 { animation-delay: 0.36s; }
+.bento-hero {
+  animation-delay: 0.05s;
+}
+
+.bento-medium-1 {
+  animation-delay: 0.12s;
+}
+
+.bento-small-1 {
+  animation-delay: 0.18s;
+}
+
+.bento-wide {
+  animation-delay: 0.24s;
+}
+
+.bento-medium-2 {
+  animation-delay: 0.30s;
+}
+
+.bento-small-2 {
+  animation-delay: 0.36s;
+}
 
 .blog-masthead {
   animation: fadeSlideUp 0.5s ease-out;
