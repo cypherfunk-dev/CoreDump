@@ -57,15 +57,16 @@ const random = Math.floor(Math.random() * siteTexts.slogans.length);
           <v-img :src="base[2].metadata.image" :alt="base[2].metadata.title" class="bento-image" cover />
         </div>
         <div class="bento-overlay">
-          <span class="bento-category">{{ base[2].metadata.category }}</span>
+          <div class="bento-tags">
+            <span class="bento-category">{{ base[2].metadata.category }}</span>
+          </div>
           <h3 class="bento-title bento-title-sm">{{ base[2].metadata.title }}</h3>
-
-        <div class="bento-meta">
-          <span class="bento-author">{{ base[2].metadata.author }}</span>
-          <span class="meta-dot">•</span>
-          <span class="bento-date">{{ timeformat().format(new Date(base[2].metadata.date)) }}</span>
+          <div class="bento-meta">
+            <span class="bento-author">{{ base[2].metadata.author }}</span>
+            <span class="meta-dot">•</span>
+            <span class="bento-date">{{ timeformat().format(new Date(base[2].metadata.date)) }}</span>
+          </div>
         </div>
-                </div>
       </router-link>
 
       <!-- Wide Card -->
@@ -109,15 +110,17 @@ const random = Math.floor(Math.random() * siteTexts.slogans.length);
         <div class="bento-image-wrapper">
           <v-img :src="base[5].metadata.image" :alt="base[5].metadata.title" class="bento-image" cover />
         </div>
-        <div class="bento-overlay-alt">
-          <span class="bento-category">{{ base[5].metadata.category }}</span>
+        <div class="bento-overlay">
+          <div class="bento-tags">
+            <span class="bento-category">{{ base[5].metadata.category }}</span>
+          </div>
           <h3 class="bento-title bento-title-sm">{{ base[5].metadata.title }}</h3>
 
-          <div class="bento-meta">
+            <div class="bento-meta">
             <span class="bento-author">{{ base[5].metadata.author }}</span>
             <span class="meta-dot">•</span>
             <span class="bento-date">{{ timeformat().format(new Date(base[5].metadata.date)) }}</span>
-          </div>
+            </div>
         </div>
       </router-link>
     </section>
@@ -136,8 +139,14 @@ const random = Math.floor(Math.random() * siteTexts.slogans.length);
   text-align: center;
   padding: 48px 16px 32px;
   margin-bottom: 8px;
-  background-image: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.6) 100%), url('@/assets/banner.png');
+background-image: linear-gradient(
+    to bottom, 
+    rgba(0, 0, 0, 0.7) 0%, /* 50% de oscuridad arriba */
+    rgba(0, 0, 0, 1) 100% /* 80% de oscuridad abajo */
+  ), 
+  url('@/assets/banner.png');  
   background-size: cover;
+  
 }
 
 .masthead-title {
