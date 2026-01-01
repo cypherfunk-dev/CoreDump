@@ -22,7 +22,7 @@ Coredump es un blog/documentación orientado a contenido técnico, donde:
 * **MiniSearch** para búsqueda y búsqueda avanzada
 * **JSON** generado automáticamente como índice de artículos
 
-Sin backend. Sin base de datos. Sin servidores llorando.
+Sin backend. Sin base de datos. 
 
 ---
 
