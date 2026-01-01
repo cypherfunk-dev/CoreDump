@@ -1,5 +1,7 @@
 # Coredump
 
+![Logo CoreDump](/avatar.png )
+
 Blog técnico minimalista hecho con **Vue** que consume y renderiza archivos **Markdown**. No hay backend, no hay base de datos, no hay magia oscura. Solo archivos, frontend y algo de disciplina.
 
 ---
