@@ -1,0 +1,25 @@
+1. Modificaciones de Hardware y ElectrónicaActualización de Electrónica: 
+Migración de la placa original de Anet a una MKS TinyBee.
+Instalación de Drivers: Montaje de controladores TMC2208.
+Crimpado de Cables: Sustitución de conectores originales por 
+conectores compatibles con la nueva placa, asegurando la continuidad 
+y orden de fases de los motores.
+Ajuste de Voltajes: Calibración manual de los potenciómetros 
+de los drivers a 0.9V - 1.0V para los motores de 0.9A de Anet.
+
+2. Configuración de Firmware (Marlin)
+Cálculo de Pasos por Unidad (STEPS_PER_UNIT): * Determinación matemática de 80 pasos para X e Y (confirmación de poleas de 20 dientes).
+Configuración de 400 para Z y 95 para el Extrusor (valor base).
+Inversión de Movimiento: Corrección de la dirección del motor del extrusor mediante #define INVERT_E0_DIR true.
+Protecciones Térmicas: Configuración del EXTRUDE_MINTEMP a 170°C para evitar daños en frío.
+Activación de Funciones de Usuario: Habilitación de #define LEVEL_BED_CORNERS para facilitar la nivelación manual desde la pantalla.
+
+3. Calibración y TroubleshootingNivelación en Caliente: Identificación del error de expansión térmica y ajuste de la cama con el nozzle a 200°C.
+Gestión de Adherencia: Uso de adhesivo en barra (Stick Fix) ante la falta de cama caliente.
+Ajuste de Extrusión: Resolución de problemas de "pandeo" (buckling) mediante corte en diagonal del filamento y alineación mecánica.
+Optimización de Temperatura: Determinación de 200°C como temperatura ideal para fluidez de PLA.
+
+4. Parámetros de Laminado (Cura)Ancho de línea: Ajuste a 0.4mm (para boquilla de 0.4mm).
+Relleno: Uso de patrón Gyroid al 15-20% para estabilidad estructural.
+Velocidad: Configuración conservadora de 40-50 mm/s para pruebas iniciales.
+Estructura: Configuración de soportes de tipo Tree (Árbol).

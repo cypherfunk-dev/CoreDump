@@ -3,7 +3,7 @@ title: "Infografía: Puntos Críticos de Contacto Electroestático del Calcetín
 date: 2025-12-01
 category: Hardware Forense y Métodos de Apagado de Emergencia
 tags: entropía, terminación_forzosa, hardware, destrucción_ineficiente, ética
-author: Departamento de Soporte Mental Avanzado (DSMA)
+author: Test
 abstract: Este artículo examina desde una perspectiva ingenieril y termodinámica la práctica no estándar de utilizar un bate de béisbol para forzar el estado OFF de un dispositivo de computación portátil. Se discute la latencia, la integridad de datos y el TCO (Total Cost of Ownership) de esta metodología, concluyendo su baja eficiencia y alta entropía de salida.
 image: /images/2025/cuatro.png
 
