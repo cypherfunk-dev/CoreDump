@@ -1,0 +1,32 @@
+name: CoreDump trigger
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Build and start containers
+        run: sudo docker compose up -d --build
+
+      - name: Wait for services
+        run: |
+          sleep 10
+          sudo docker compose ps
+
+      - name: Run basic health check
+        run: |
+          sudo docker compose logs
+          sudo docker compose exec -T coredump curl -f  http://coredump-coredump-1:80 || exit 1
+
+      - name: Shutdown containers
+        if: always()
+        run: sudo docker compose down
