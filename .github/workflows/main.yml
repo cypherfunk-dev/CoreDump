@@ -26,7 +26,3 @@ jobs:
         run: |
           sudo docker compose logs
           sudo docker compose exec -T coredump curl -f  http://coredump-coredump-1:80 || exit 1
-
-      - name: Shutdown containers
-        if: always()
-        run: sudo docker compose down
