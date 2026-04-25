@@ -105,7 +105,7 @@ const random = Math.floor(Math.random() * siteTexts.slogans.length);
         </div>
       </router-link>
 
-      <!-- Small Card 2 -->
+      <!-- Long Card -->
       <router-link :to="base[5].slug" class="bento-card bento-small-2">
         <div class="bento-image-wrapper">
           <v-img :src="base[5].metadata.image" :alt="base[5].metadata.title" class="bento-image" cover />
