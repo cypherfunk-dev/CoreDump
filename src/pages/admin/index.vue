@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, nextTick } from 'vue';
 import MarkdownIt from 'markdown-it';
 import { useUiStore } from '@/stores/ui';
 
@@ -16,7 +16,7 @@ const loginError = ref('');
 const token = ref('');
 
 // ── Estado del editor ──
-const form = ref({
+const emptyForm = () => ({
   title: '',
   date: new Date().toISOString().split('T')[0],
   category: '',
@@ -26,13 +26,23 @@ const form = ref({
   image: '',
   content: '',
   year: new Date().getFullYear().toString(),
+  draft: false,
+  comments: true,
 });
+const form = ref(emptyForm());
+
+// ── Artículos existentes ──
+interface ArticleRow { file: string; title?: string; date?: string; draft?: boolean }
+const articles = ref<ArticleRow[]>([]);
+const showList = ref(false);
+/** Ruta (content/...) del artículo que se está editando; null = nuevo */
+const editingFile = ref<string | null>(null);
+const contentEditor = ref<HTMLTextAreaElement | null>(null);
 
 const categories = ref<string[]>([]);
 const existingImages = ref<string[]>([]);
 const snackbar = ref({ show: false, text: '', color: 'success' });
 const saving = ref(false);
-const rebuilding = ref(false);
 const uploading = ref(false);
 const lastCreatedSlug = ref('');
 const previewTab = ref('editor');
@@ -88,18 +98,39 @@ async function login() {
       loginError.value = data.error || 'Error de autenticación';
       return;
     }
-    token.value = data.token;
-    isLoggedIn.value = true;
-    loadCategories();
-    loadImages();
+    startSession(data.token);
   } catch {
-    loginError.value = 'No se pudo conectar al servidor admin (puerto 3001)';
+    loginError.value = 'No se pudo conectar al servidor admin (puerto 3002)';
   }
 }
+
+// La sesión sobrevive a las recargas de Vite (cada guardado recompila el
+// contenido y recarga la página). Si el servidor se reinició, el token caduca.
+const SESSION_KEY = 'coredump-admin-token';
+
+function startSession(t: string) {
+  token.value = t;
+  isLoggedIn.value = true;
+  try { sessionStorage.setItem(SESSION_KEY, t); } catch { /* ignore */ }
+  loadCategories();
+  loadImages();
+  loadArticles();
+}
+
+async function restoreSession() {
+  let saved: string | null = null;
+  try { saved = sessionStorage.getItem(SESSION_KEY); } catch { /* ignore */ }
+  if (!saved) return;
+  const res = await fetch(`${API}/categories`, { headers: { Authorization: `Bearer ${saved}` } }).catch(() => null);
+  if (res?.ok) startSession(saved);
+  else try { sessionStorage.removeItem(SESSION_KEY); } catch { /* ignore */ }
+}
+restoreSession();
 
 function logout() {
   isLoggedIn.value = false;
   token.value = '';
+  try { sessionStorage.removeItem(SESSION_KEY); } catch { /* ignore */ }
   loginForm.value = { username: '', password: '' };
 }
 
@@ -156,15 +187,21 @@ async function saveArticle() {
 
   saving.value = true;
   try {
-    const res = await fetch(`${API}/articles`, {
-      method: 'POST',
+    const editing = editingFile.value;
+    const res = await fetch(editing ? `${API}/article` : `${API}/articles`, {
+      method: editing ? 'PUT' : 'POST',
       headers: authHeaders(),
-      body: JSON.stringify(form.value),
+      body: JSON.stringify({ ...form.value, file: editing }),
     });
     const data = await res.json();
     if (data.success) {
-      lastCreatedSlug.value = data.slug;
-      showSnack(`Artículo creado: ${data.filePath}`, 'success');
+      if (editing) {
+        showSnack(`Guardado: ${editing}`, 'success');
+      } else {
+        lastCreatedSlug.value = data.slug;
+        showSnack(`Artículo creado: ${data.filePath} (Vite lo recompila solo)`, 'success');
+      }
+      loadArticles();
     } else {
       showSnack(data.error || 'Error al guardar', 'error');
     }
@@ -175,41 +212,102 @@ async function saveArticle() {
   }
 }
 
-// ── Reconstruir base de datos ──
-async function rebuildDatabase() {
-  rebuilding.value = true;
+// ── Limpiar formulario ──
+function clearForm() {
+  form.value = emptyForm();
+  editingFile.value = null;
+  lastCreatedSlug.value = '';
+}
+
+// ── Listar / abrir / borrar artículos existentes ──
+const isoDay = (d: unknown) => (d ? new Date(d as string).toISOString().slice(0, 10) : '');
+
+async function loadArticles() {
   try {
-    const res = await fetch(`${API}/rebuild-db`, {
-      method: 'POST',
-      headers: authHeaders(),
-    });
-    const data = await res.json();
-    if (data.success) {
-      showSnack(`DB reconstruida: ${data.output.trim()}`, 'success');
-    } else {
-      showSnack(data.error || 'Error al reconstruir', 'error');
-    }
+    const res = await fetch(`${API}/articles`, { headers: authHeaders() });
+    const rows: ArticleRow[] = await res.json();
+    articles.value = rows.sort((a, b) => String(b.date ?? '').localeCompare(String(a.date ?? '')));
+  } catch { /* silencioso */ }
+}
+
+async function openArticle(file: string) {
+  try {
+    const res = await fetch(`${API}/article?file=${encodeURIComponent(file)}`, { headers: authHeaders() });
+    if (!res.ok) throw new Error();
+    const { data, content } = await res.json();
+    form.value = {
+      ...emptyForm(),
+      title: data.title ?? '',
+      date: isoDay(data.date) || emptyForm().date,
+      category: data.category ?? '',
+      tags: Array.isArray(data.tags) ? data.tags.join(', ') : (data.tags ?? ''),
+      author: data.author ?? '',
+      abstract: data.abstract ?? '',
+      image: data.image ?? '',
+      content,
+      year: file.match(/\/(\d{4})\//)?.[1] ?? emptyForm().year,
+      draft: data.draft === true,
+      comments: data.comments !== false,
+    };
+    editingFile.value = file;
+    lastCreatedSlug.value = '';
+    showList.value = false;
+    previewTab.value = 'editor';
   } catch {
-    showSnack('Error de conexión al reconstruir DB', 'error');
-  } finally {
-    rebuilding.value = false;
+    showSnack('No se pudo abrir el artículo', 'error');
   }
 }
 
-// ── Limpiar formulario ──
-function clearForm() {
-  form.value = {
-    title: '',
-    date: new Date().toISOString().split('T')[0],
-    category: '',
-    tags: '',
-    author: '',
-    abstract: '',
-    image: '',
-    content: '',
-    year: new Date().getFullYear().toString(),
-  };
-  lastCreatedSlug.value = '';
+async function deleteArticle(row: ArticleRow) {
+  if (!confirm(`¿Borrar "${row.title ?? row.file}"? (${row.file})`)) return;
+  try {
+    const res = await fetch(`${API}/article?file=${encodeURIComponent(row.file)}`, { method: 'DELETE', headers: authHeaders() });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error);
+    if (editingFile.value === row.file) clearForm();
+    showSnack(`Borrado: ${row.file}`, 'success');
+    loadArticles();
+  } catch (e) {
+    showSnack((e as Error).message || 'Error al borrar', 'error');
+  }
+}
+
+// ── Pegar imágenes desde el portapapeles ──
+async function onPaste(event: ClipboardEvent) {
+  const item = [...(event.clipboardData?.items ?? [])].find(i => i.type.startsWith('image/'));
+  const file = item?.getAsFile();
+  if (!file) return;
+  event.preventDefault();
+
+  const ext = file.type === 'image/png' ? 'png' : file.type === 'image/webp' ? 'webp' : 'jpg';
+  const formData = new FormData();
+  formData.append('image', file, `pegada-${Date.now()}.${ext}`);
+  uploading.value = true;
+  try {
+    const res = await fetch(`${API}/upload/${form.value.year}`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token.value}` },
+      body: formData,
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error);
+    insertAtCursor(`![Descripción](${data.path})`);
+    showSnack('Imagen pegada y convertida a WebP', 'success');
+    loadImages();
+  } catch (e) {
+    showSnack((e as Error).message || 'Error al subir la imagen pegada', 'error');
+  } finally {
+    uploading.value = false;
+  }
+}
+
+function insertAtCursor(text: string) {
+  const el = contentEditor.value;
+  if (!el) { form.value.content += text; return; }
+  const start = el.selectionStart ?? form.value.content.length;
+  const end = el.selectionEnd ?? start;
+  form.value.content = form.value.content.slice(0, start) + text + form.value.content.slice(end);
+  nextTick(() => { el.focus(); el.selectionStart = el.selectionEnd = start + text.length; });
 }
 
 // ── Insertar plantilla markdown ──
@@ -287,19 +385,54 @@ watch(() => form.value.year, () => {
       </v-card>
     </div>
 
+    <!-- ═══════ LISTA DE ARTÍCULOS ═══════ -->
+    <v-dialog v-model="showList" max-width="720">
+      <v-card>
+        <v-card-title class="d-flex align-center">
+          <v-icon class="mr-2">mdi-format-list-bulleted</v-icon>
+          Artículos ({{ articles.length }})
+          <v-spacer />
+          <v-btn icon size="small" variant="text" @click="showList = false"><v-icon>mdi-close</v-icon></v-btn>
+        </v-card-title>
+        <v-divider />
+        <v-list lines="two" density="compact">
+          <v-list-item v-for="row in articles" :key="row.file" :title="row.title || row.file" :subtitle="row.file"
+            @click="openArticle(row.file)">
+            <template #prepend>
+              <v-chip size="x-small" :color="row.draft ? 'warning' : 'grey'" variant="tonal" class="mr-2">
+                {{ row.draft ? 'borrador' : isoDay(row.date) }}
+              </v-chip>
+            </template>
+            <template #append>
+              <v-btn icon size="small" variant="text" color="red-lighten-2" title="Borrar" @click.stop="deleteArticle(row)">
+                <v-icon>mdi-delete-outline</v-icon>
+              </v-btn>
+            </template>
+          </v-list-item>
+          <v-list-item v-if="!articles.length" title="No hay artículos todavía" />
+        </v-list>
+      </v-card>
+    </v-dialog>
+
     <!-- ═══════ EDITOR ═══════ -->
-    <div v-else class="editor-wrapper">
+    <div v-if="isLoggedIn" class="editor-wrapper">
 
       <!-- Toolbar -->
       <v-toolbar color="transparent" density="compact" class="editor-toolbar">
         <v-icon class="ml-4 mr-2" color="green-accent-3">mdi-pencil</v-icon>
         <v-toolbar-title class="text-subtitle-1 font-weight-bold">
-          Editor de Artículos
+          {{ editingFile ? 'Editando artículo' : 'Nuevo artículo' }}
         </v-toolbar-title>
         <v-spacer />
-        <v-chip v-if="generatedSlug" variant="outlined" size="small" class="mr-2" color="grey">
+        <v-chip v-if="editingFile" variant="tonal" size="small" class="mr-2" color="blue-lighten-2">
+          {{ editingFile }}
+        </v-chip>
+        <v-chip v-else-if="generatedSlug" variant="outlined" size="small" class="mr-2" color="grey">
           {{ form.year }}/{{ generatedSlug }}
         </v-chip>
+        <v-btn icon size="small" @click="showList = true; loadArticles()" title="Artículos existentes">
+          <v-icon>mdi-format-list-bulleted</v-icon>
+        </v-btn>
         <v-btn icon size="small" @click="clearForm" title="Limpiar formulario">
           <v-icon>mdi-file-plus-outline</v-icon>
         </v-btn>
@@ -405,6 +538,10 @@ watch(() => form.value.year, () => {
             :placeholder="`/images/${form.year}/nombre.webp`"
             class="mb-2"
           />
+          <div class="d-flex ga-4 mb-2">
+            <v-switch v-model="form.draft" label="Borrador" density="compact" hide-details color="warning" />
+            <v-switch v-model="form.comments" label="Comentarios" density="compact" hide-details color="green-accent-3" />
+          </div>
 
           <v-btn
             variant="outlined"
@@ -511,9 +648,11 @@ watch(() => form.value.year, () => {
           <div class="editor-content" :class="{ 'split-mode': previewTab === 'split' }">
             <textarea
               v-if="previewTab !== 'preview'"
+              ref="contentEditor"
               v-model="form.content"
               class="markdown-editor"
-              placeholder="Escribe tu artículo en Markdown aquí..."
+              placeholder="Escribe tu artículo en Markdown aquí... (puedes pegar imágenes)"
+              @paste="onPaste"
               spellcheck="true"
             />
             <div
@@ -535,17 +674,6 @@ watch(() => form.value.year, () => {
               </v-chip>
             </div>
             <div class="action-bar-right">
-              <v-btn
-                variant="outlined"
-                color="blue-lighten-2"
-                size="small"
-                @click="rebuildDatabase"
-                :loading="rebuilding"
-                class="mr-2"
-              >
-                <v-icon left size="small">mdi-database-refresh</v-icon>
-                Reconstruir DB
-              </v-btn>
               <v-btn
                 color="green-accent-3"
                 variant="flat"
