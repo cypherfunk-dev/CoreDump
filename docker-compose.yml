@@ -1,20 +1,12 @@
 services:
-
   coredump:
-
     build:
-
       context: .
-
       dockerfile: Dockerfile
-
     restart: unless-stopped
-    
     networks:
       - web
 
 networks:
-
   web:
-
     external: true

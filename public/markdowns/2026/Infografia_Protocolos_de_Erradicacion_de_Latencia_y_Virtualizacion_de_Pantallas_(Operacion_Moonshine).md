@@ -5,10 +5,10 @@ category: Streaming de Baja Latencia y Geometría de Monitores No Físicos
 tags: latencia_cero, sunshine, moonlight, monitor_fantasma, VDD, hisense
 author: Departamento de Soporte Mental Avanzado (DSMA)
 abstract: Este documento examina, desde una perspectiva de arquitectura de redes, la mitigación de la latencia nativa (asociada a protocolos estándar como Chromecast) mediante la topología cliente-servidor. Se detalla la instanciación de un monitor no-euclidiano (Virtual Display Driver) para forzar el estado de "Escritorio Extendido" hacia un hardware receptor Hisense, minimizando el factor de fricción visual ($\Delta t_{\text{latencia}} \approx 0$).
-image: /images/2026/sunshine_minimal_logo.png
+image: /images/2026/sunshine_minimal_logo.webp
 ---
 
-![Infografía: Operación Moonshine](/images/2026/sunshine_minimal_logo.png)
+![Infografía: Operación Moonshine](/images/2026/sunshine_minimal_logo.webp)
 
 La **Hipótesis del Cable HDMI Obsoleto (HCHO)** revela que la dependencia de enlaces físicos y protocolos nativos genéricos genera una degradación inaceptable en la interactividad en tiempo real. La solución exige abandonar los métodos convencionales y adoptar una arquitectura de transmisión de grado industrial.
 

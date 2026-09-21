@@ -1,7 +1,6 @@
-@use 'font'
 $color-primario: #3a7569
-$fuente-principal: 'Inter', sans-serif
-$fuente-secundaria: 'Montserrat', sans-serif
+$fuente-principal: 'Inter Variable', sans-serif
+$fuente-secundaria: 'Montserrat Variable', sans-serif
 $text-primary: #ddddddff
 $text-secondary: #8f8f8fff
 $text-dark: #212121
@@ -12,6 +11,10 @@ $alternative4: #AFB3F7
 $alternative5: #C1BCAC
 $alternative6: #96c5f727
 
+
+\:root
+  --font-body: #{$fuente-principal}
+  --font-heading: #{$fuente-secundaria}
 
 html
   overflow-y: auto
@@ -25,14 +28,14 @@ html
 
 
 @media screen and (max-width: 600px) 
-  .markdawn-content
+  .markdown-content
     img
       margin: 0 auto
       display: block
       width: 80vw
 
 @media screen and (min-width: 601px) and (max-width: 960px)
-  .markdawn-content
+  .markdown-content
     img
       margin: 0 auto
       display: block
@@ -41,7 +44,7 @@ html
     padding: 5vh
 
 @media screen and (min-width: 961px) and (max-width: 1599px)
-  .markdawn-content
+  .markdown-content
     img
       margin: 0 auto
       display: block
@@ -50,7 +53,7 @@ html
     padding: 5vh 10vh 5vh 10vh
 
 @media screen and (min-width: 1600px)
-  .markdawn-content
+  .markdown-content
     img
       margin: 0 auto
       padding: 2rem

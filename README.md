@@ -90,20 +90,43 @@ Script que:
 * Genera un archivo JSON con la metadata
 * Es consumido directamente por el frontend
 
-### 🖼️ Miniaturas (pendiente)
+### 🖼️ Imágenes
 
-Falta implementar un script que:
+`npm run images` (usa `sharp`):
 
-* Analice las imágenes de los artículos
-* Genere miniaturas automáticamente
+* Convierte los PNG/JPG de `public/images` y `src/assets` a **WebP** (máx. 1600 px)
+* Reescribe las referencias `image:` y `![]()` de los markdowns
+* Borra los originales (usa `-- --keep` para conservarlos) y regenera el índice
 
-### 🧹 Normalización de slugs (pendiente)
+### 🖥️ Panel de administración (solo local)
 
-Falta un script que:
+```bash
+npm run dev:full   # vite (:3000) + servidor admin (:3002)
+```
 
-* Corrija nombres de archivos Markdown
-* Elimine o transforme caracteres conflictivos
-* Garantice slugs seguros para URLs y router
+Abre `http://localhost:3000/admin` (usuario/clave por defecto `admin` / `coredump`, configurables con `ADMIN_USER` y `ADMIN_PASS`). Desde ahí puedes:
+
+* Escribir el artículo con preview de Markdown y generar el frontmatter
+* Subir la imagen destacada (PNG/JPG se convierten a WebP automáticamente)
+* Regenerar `db.json`
+
+El servidor (`server/admin-server.js`) escribe los archivos directamente en el repo; después solo queda commitear. La ruta `/admin` se excluye del build de producción.
+
+### 📝 Flujo para publicar un artículo
+
+**Con el panel:** `npm run dev:full` → `/admin` → guardar → "Reconstruir DB" → commit.
+
+**A mano:**
+
+```bash
+# 1. Crear public/markdowns/{año}/{slug}.md con frontmatter e imagen en public/images/{año}/
+npm run images   # 2. Optimiza imágenes y regenera src/database/db.json
+npm run build    # 3. Type-check + build
+```
+
+### 🧹 Slugs
+
+Los artículos creados desde el panel generan el slug a partir del título (minúsculas, sin acentos, guiones). Los archivos creados a mano usan su nombre tal cual; conviene evitar acentos, espacios y paréntesis.
 
 ---
 
@@ -126,25 +149,6 @@ Pendientes principales:
 * HTML semántico correcto
 * Sitemap generado desde el índice JSON
 * URLs limpias basadas en slugs seguros
-
-### 🖼️ Imágenes y SEO
-
-El script de imágenes debe:
-
-* Generar miniaturas automáticamente
-* Convertir o validar formato **`.webp`**
-* Optimizar peso y dimensiones
-* Asegurar `alt` text desde frontmatter
-
-Todo enfocado a SEO para sitios solo frontend.
-
----
-
-## ⚙️ Código y estructura (pendiente)
-
-* Revisar y optimizar el código del index
-* Mejorar estructura y rendimiento
-* Refactor necesario: código generado por Claude sin auditoría
 
 ---
 

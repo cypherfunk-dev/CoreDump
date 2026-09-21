@@ -5,7 +5,7 @@ category: Software
 tags: office, windows, ltsc, licencias, drm
 author: CoreDump Admin
 abstract: "Guía definitiva para eliminar instalaciones persistentes de Office LTSC cuando los métodos convencionales fallan. Se detalla un proceso de tres etapas: desinstalación forzada con herramientas externas, limpieza manual de directorios críticos y registros, y la depuración final de licencias mediante ospp.vbs tras la reinstalación. Ideal para resolver conflictos de 'versión incorrecta' o bloqueos en el instalador."
-image: /images/2025/cuatro.png
+image: /images/2025/cuatro.webp
 ---
 
 Admitámoslo: intentar desinstalar Office LTSC es como intentar terminar con un ex tóxico que se niega a sacar sus cosas de tu casa. Le dices que se vaya (vía Panel de Control), crees que se ha ido, pero cuando intentas meter una nueva versión de Office, ¡sorpresa!, ahí siguen sus fotos en el registro y sus carpetas escondidas en el AppData gritando: "¡Todavía estoy aquí!".

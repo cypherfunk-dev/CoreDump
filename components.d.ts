@@ -11,16 +11,11 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    '[title]': typeof import('./src/components/[title].vue')['default']
-    Article: typeof import('./src/components/Article.vue')['default']
-    ArticleLayout: typeof import('./src/components/ArticleLayout.vue')['default']
     Footer: typeof import('./src/components/Footer.vue')['default']
-    HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     ModalSearch: typeof import('./src/components/ModalSearch.vue')['default']
     Navbar: typeof import('./src/components/Navbar.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    SearchBar: typeof import('./src/components/SearchBar.vue')['default']
     SearchResults: typeof import('./src/components/SearchResults.vue')['default']
     Sidebar: typeof import('./src/components/Sidebar.vue')['default']
   }

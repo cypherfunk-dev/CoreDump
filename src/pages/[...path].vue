@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import image from '../assets/404.jpg';
+import image from '../assets/404.webp';
 </script>
 
 <template>

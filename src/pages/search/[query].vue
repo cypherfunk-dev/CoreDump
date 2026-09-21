@@ -331,7 +331,7 @@ $search-text-muted: #a0a0a0
   text-align: center
 
 .search-page-title
-  font-family: 'Montserrat', sans-serif
+  font-family: var(--font-heading)
   font-size: 2rem
   font-weight: 700
   color: $search-text
@@ -395,7 +395,7 @@ $search-text-muted: #a0a0a0
   gap: 8px
 
 .option-label
-  font-family: 'Inter', sans-serif
+  font-family: var(--font-body)
   font-size: 0.85rem
   font-weight: 600
   color: $search-text
@@ -451,7 +451,7 @@ $search-text-muted: #a0a0a0
 .results-summary
   max-width: 800px
   margin: 0 auto 24px
-  font-family: 'Inter', sans-serif
+  font-family: var(--font-body)
   font-size: 1rem
   color: $search-text-muted
   text-align: center
@@ -488,7 +488,7 @@ $search-text-muted: #a0a0a0
   gap: 8px
 
 .result-category
-  font-family: 'Inter', sans-serif
+  font-family: var(--font-body)
   font-size: 0.7rem
   font-weight: 700
   text-transform: uppercase
@@ -496,7 +496,7 @@ $search-text-muted: #a0a0a0
   color: $search-accent
 
 .result-title
-  font-family: 'Montserrat', sans-serif
+  font-family: var(--font-heading)
   font-size: 1.25rem
   font-weight: 700
   color: $search-text
@@ -504,7 +504,7 @@ $search-text-muted: #a0a0a0
   line-height: 1.3
 
 .result-abstract
-  font-family: 'Inter', sans-serif
+  font-family: var(--font-body)
   font-size: 0.95rem
   line-height: 1.5
   color: $search-text-muted
@@ -518,7 +518,7 @@ $search-text-muted: #a0a0a0
   display: flex
   align-items: center
   gap: 16px
-  font-family: 'Inter', sans-serif
+  font-family: var(--font-body)
   font-size: 0.8rem
   color: $search-text-muted
   margin-top: 8px

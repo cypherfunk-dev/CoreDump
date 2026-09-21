@@ -1,128 +1,125 @@
 <script setup lang="ts">
 import MarkdownIt from 'markdown-it';
-import { ref, watch } from 'vue';
+import { computed, ref, watch, onUnmounted } from 'vue';
 import { useRoute } from 'vue-router';
 import timeformat from '@/utils/dateparser';
-import { useUiStore } from '@/stores/ui';
+import { useUiStore, findArticle } from '@/stores/ui';
+import siteTexts from '@/database/site-texts.json';
+
 const ui = useUiStore();
-
-// Instanciamos MarkdownIt para procesar el Markdown
-const md = new MarkdownIt();
-const metadata = ref<Record<string, string>>({});
-let metadatatags = ref<string[]>([]);
-const htmlContent = ref('');
-const rawContent = ref('');
-
-// Capturamos los parámetros de la URL
 const route = useRoute();
-const year = route.params.year as string;
-const slug = route.params.slug as string;
+const md = new MarkdownIt({
+    html: false,       // sin HTML embebido en los .md (XSS)
+    linkify: true,
+    typographer: true,
+});
+const originalTitle = document.title;
 
-// Función para extraer metadatos del archivo Markdown
-const extractMetadata = (content: string): { metadata: Record<string, string>, text: string, tags: string[] } => {
-    let cleantext = content;
-    const metadataRegex = /---\s*([\s\S]*?)\s*---/;
-    let processedTags: string[] = [];
-    const match = content.match(metadataRegex);
+const htmlContent = ref('');
+const error = ref<string | null>(null);
 
-    if (match) {
-        const metadataString = match[1];
-        const metadataLines = metadataString?.split('\n');
-        const metadata: Record<string, string> = {};
+// La metadata ya está indexada en db.json: no hace falta re-parsear el frontmatter.
+const article = computed(() => findArticle(`/articles/${route.params.year}/${route.params.slug}`));
+const meta = computed(() => article.value?.metadata);
+const tags = computed(() => (meta.value?.tags ?? '').split(',').map(t => t.trim()).filter(Boolean));
+const dateLabel = computed(() => meta.value ? timeformat().format(new Date(meta.value.date)) : '');
 
-        metadataLines?.forEach(line => {
-            const [key, ...rest] = line.split(':');
-            metadata[key.trim()] = rest.join(':').trim();
-        });
+const FRONTMATTER = /^---\s*[\s\S]*?\s*---\s*/;
 
-        cleantext = content.replace(match[0], '').trim();
-
-        if (metadata.tags) {
-            processedTags = metadata.tags.split(',').map(tag => tag.trim());
-        }
-
-        // Convertir la fecha a formato legible
-        if (metadata.date) {
-            const dateObj = new Date(metadata.date);
-            metadata.date = timeformat().format(dateObj);
-        }
-
-        return { metadata, text: cleantext, tags: processedTags };
-    } else {
-        metadatatags.value = [];
+// SEO: título y meta tags por artículo (SPA, así que se hace en cliente).
+const setMeta = (name: string, content: string | undefined, property = false) => {
+    if (!content) return;
+    const attr = property ? 'property' : 'name';
+    let el = document.head.querySelector<HTMLMetaElement>(`meta[${attr}="${name}"]`);
+    if (!el) {
+        el = document.createElement('meta');
+        el.setAttribute(attr, name);
+        document.head.appendChild(el);
     }
-
-    return { metadata: {}, text: content, tags: [] };
+    el.content = content;
 };
-// Función para cargar y procesar el contenido
-const loadAndProcessContent = async (year: string, slug: string) => {
+
+watch(meta, (m) => {
+    if (!m) return;
+    document.title = `${m.title} | ${siteTexts.siteName}`;
+    setMeta('description', m.abstract);
+    setMeta('keywords', tags.value.join(', '));
+    setMeta('author', m.author);
+    setMeta('og:title', m.title, true);
+    setMeta('og:description', m.abstract, true);
+    setMeta('og:type', 'article', true);
+    setMeta('og:image', m.image, true);
+}, { immediate: true });
+
+onUnmounted(() => { document.title = originalTitle; });
+
+const loadContent = async (year: string, slug: string) => {
+    error.value = null;
+    htmlContent.value = '';
+    // Si no está en el índice no existe: evitamos el fetch (el fallback SPA
+    // devolvería index.html con 200 y se renderizaría como Markdown).
+    if (!article.value) {
+        error.value = siteTexts.articleNotFound;
+        return;
+    }
     try {
-        // Aquí se accede al archivo .md desde la carpeta 'public'
         const response = await fetch(`/markdowns/${year}/${slug}.md`);
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+        if (!response.ok || response.headers.get('content-type')?.includes('text/html')) {
+            throw new Error(`HTTP ${response.status}`);
         }
-
         const content = await response.text();
-        rawContent.value = content;
-        const { metadata: extractedMetadata, text, tags } = extractMetadata(content);
-        metadata.value = extractedMetadata;
-        metadatatags.value = tags;
-        htmlContent.value = md.render(text);
-    } catch (error) {
+        htmlContent.value = md.render(content.replace(FRONTMATTER, ''));
+    } catch (e) {
+        error.value = siteTexts.articleNotFound;
     }
 };
 
-// Reaccionamos al cambio de los parámetros de la ruta
 watch(
-    () => route.params,
-    (newParams) => {
-        const newYear = newParams.year as string;
-        const newSlug = newParams.slug as string;
-        if (newYear && newSlug) {
-            ui.onloading(true);
-            loadAndProcessContent(newYear, newSlug).finally(() => {
-                ui.onloading(false);
-            });
-        }
+    () => [route.params.year, route.params.slug] as [string, string],
+    ([year, slug]) => {
+        if (!year || !slug) return;
+        ui.onloading(true);
+        loadContent(year, slug).finally(() => ui.onloading(false));
     },
     { immediate: true }
 );
-
 </script>
 
 <template>
-    <v-container app fluid class="markdown-container">
-        <div app class="markdown-view">
-            <div >
-                <h1>{{ metadata.title }}</h1>
-                <div class="metadata-container pb-10">
-                    <div v-if="(Object.keys(metadata).length !== 0) && Object.keys(metadata)[0] !== ''">
-                        <div>
-                            <span class="font-weight-bold">Escrito por: </span>
-                            <span class="lastlinemetadata">{{ metadata.author }}</span>
-                        </div>
-                        <div>
-                            <span class="font-weight-bold">Subido un: </span>
-                            <span class="lastlinemetadata">{{ metadata.date }}</span>
-                        </div>
-                        <div>
-                            <span class="font-weight-bold">Resumen: </span>
-                            <span class="lastlinemetadata">{{ metadata.abstract }}</span>
-                        </div>
-                        <div>
-                            <span class="font-weight-bold">Etiquetas: </span>
-                            <span v-for="tag in metadatatags" :key="tag"> {{ '#' + tag + ' ' }} </span><br />
-                        </div>
+    <v-container fluid class="markdown-container">
+        <div class="markdown-view">
+            <h1>{{ meta?.title }}</h1>
+            <div class="metadata-container pb-10">
+                <div v-if="meta">
+                    <div>
+                        <span class="font-weight-bold">Escrito por: </span>
+                        <span class="lastlinemetadata">{{ meta.author }}</span>
                     </div>
-                    <div v-if="((Object.keys(metadata).length === 0) && !ui.loading) || Object.keys(metadata)[0] === ''">
-                        <em>No metadata available.</em>
+                    <div>
+                        <span class="font-weight-bold">Subido un: </span>
+                        <span class="lastlinemetadata">{{ dateLabel }}</span>
+                    </div>
+                    <div>
+                        <span class="font-weight-bold">Resumen: </span>
+                        <span class="lastlinemetadata">{{ meta.abstract }}</span>
+                    </div>
+                    <div>
+                        <span class="font-weight-bold">Etiquetas: </span>
+                        <router-link v-for="tag in tags" :key="tag" :to="`/search/${encodeURIComponent(tag)}`"
+                            class="mr-2">#{{ tag }}</router-link>
                     </div>
                 </div>
+                <div v-else-if="!ui.loading">
+                    <em>No metadata available.</em>
+                </div>
             </div>
-            <v-progress-circular color="primary" indeterminate v-show="ui.loading === true" />
-                
-                <article class="markdawn-content" v-show="ui.loading === false" v-html="htmlContent" />
+
+            <v-progress-circular v-if="ui.loading" color="primary" indeterminate />
+            <div v-else-if="error" class="text-center py-10">
+                <p class="mb-4">{{ error }}</p>
+                <v-btn to="/" variant="outlined">{{ siteTexts.goBackHome }}</v-btn>
+            </div>
+            <article v-else class="markdown-content" v-html="htmlContent" />
         </div>
     </v-container>
 </template>

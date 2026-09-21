@@ -277,14 +277,14 @@ $search-text-muted: #a0a0a0
   text-align: center
 
 .search-page-title
-  font-family: 'Montserrat', sans-serif
+  font-family: var(--font-heading)
   font-size: 2rem
   font-weight: 700
   color: $search-text
   margin-bottom: 8px
 
 .search-subtitle
-  font-family: 'Inter', sans-serif
+  font-family: var(--font-body)
   font-size: 1rem
   color: $search-text-muted
   margin-bottom: 24px
@@ -347,7 +347,7 @@ $search-text-muted: #a0a0a0
   gap: 8px
 
 .option-label
-  font-family: 'Inter', sans-serif
+  font-family: var(--font-body)
   font-size: 0.85rem
   font-weight: 600
   color: $search-text
@@ -400,14 +400,14 @@ $search-text-muted: #a0a0a0
   color: $search-text-muted
 
 .welcome-title
-  font-family: 'Montserrat', sans-serif
+  font-family: var(--font-heading)
   font-size: 1.5rem
   font-weight: 600
   color: $search-text
   margin: 20px 0 12px
 
 .welcome-text
-  font-family: 'Inter', sans-serif
+  font-family: var(--font-body)
   font-size: 1rem
   line-height: 1.6
   margin-bottom: 32px
@@ -419,14 +419,14 @@ $search-text-muted: #a0a0a0
   text-align: left
 
 .tips-title
-  font-family: 'Montserrat', sans-serif
+  font-family: var(--font-heading)
   font-size: 1rem
   font-weight: 600
   color: $search-text
   margin-bottom: 12px
 
 .tips-list
-  font-family: 'Inter', sans-serif
+  font-family: var(--font-body)
   font-size: 0.9rem
   line-height: 1.8
   padding-left: 20px

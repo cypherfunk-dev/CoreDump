@@ -1,126 +1,52 @@
-<script setup>
-import base from '@/database/db.json'
-import timeformat from '@/utils/dateparser.ts'
+<script setup lang="ts">
+import { articles } from '@/stores/ui'
+import timeformat from '@/utils/dateparser'
 import siteTexts from '@/database/site-texts.json'
-const random = Math.floor(Math.random() * siteTexts.slogans.length);
 
+const slogan = siteTexts.slogans[Math.floor(Math.random() * siteTexts.slogans.length)]
+
+// Posición de cada tarjeta en el bento grid; el primero (más reciente) es el hero.
+const layouts = ['bento-hero', 'bento-medium-1', 'bento-small-1', 'bento-wide', 'bento-medium-2', 'bento-small-2']
+const titleSizes = ['bento-title-lg', 'bento-title-md', 'bento-title-sm', 'bento-title-md', 'bento-title-md', 'bento-title-sm']
+const overlays = ['bento-overlay-dark', '', '', 'bento-overlay-gradient', '', '']
+
+const featured = articles.slice(0, layouts.length).map((article, i) => ({
+  ...article,
+  layout: layouts[i],
+  titleSize: titleSizes[i],
+  overlay: overlays[i],
+  dateLabel: timeformat().format(new Date(article.metadata.date)),
+}))
 </script>
 
 <template>
   <div class="blog-index">
     <!-- Masthead / Header -->
     <header class="blog-masthead">
-      <p class="masthead-tagline">{{ siteTexts.slogans[random] }}</p>
+      <p class="masthead-tagline">{{ slogan }}</p>
       <div class="masthead-divider"></div>
     </header>
 
     <!-- Bento Grid Layout -->
     <section class="bento-grid">
-      <!-- Hero Card (Large) -->
-      <router-link :to="base[0].slug" class="bento-card bento-hero">
+      <router-link v-for="(article, i) in featured" :key="article.slug" :to="article.slug"
+        class="bento-card" :class="article.layout">
         <div class="bento-image-wrapper">
-          <v-img :src="base[0].metadata.image" :alt="base[0].metadata.title" class="bento-image" cover />
+          <v-img :src="article.metadata.image" :alt="article.metadata.title" class="bento-image" cover
+            :eager="i === 0" />
         </div>
-        <div class="bento-overlay bento-overlay-dark">
+        <div class="bento-overlay" :class="article.overlay">
           <div class="bento-tags">
-            <span class="bento-category">{{ base[0].metadata.category }}</span>
+            <span class="bento-category">{{ article.metadata.category }}</span>
           </div>
-          <h2 class="bento-title bento-title-lg">{{ base[0].metadata.title }}</h2>
+          <component :is="i === 0 ? 'h2' : 'h3'" class="bento-title" :class="article.titleSize">
+            {{ article.metadata.title }}
+          </component>
           <div class="bento-meta">
-            <span class="bento-author">{{ base[0].metadata.author }}</span>
+            <span class="bento-author">{{ article.metadata.author }}</span>
             <span class="meta-dot">•</span>
-            <span class="bento-date">{{ timeformat().format(new Date(base[0].metadata.date)) }}</span>
+            <span class="bento-date">{{ article.dateLabel }}</span>
           </div>
-        </div>
-      </router-link>
-
-      <!-- Medium Card (Top Right) -->
-      <router-link :to="base[1].slug" class="bento-card bento-medium-1">
-        <div class="bento-image-wrapper">
-          <v-img :src="base[1].metadata.image" :alt="base[1].metadata.title" class="bento-image" cover />
-        </div>
-        <div class="bento-overlay">
-          <div class="bento-tags">
-            <span class="bento-category">{{ base[1].metadata.category }}</span>
-          </div>
-          <h3 class="bento-title bento-title-md">{{ base[1].metadata.title }}</h3>
-          <div class="bento-meta">
-            <span class="bento-author">{{ base[1].metadata.author }}</span>
-            <span class="meta-dot">•</span>
-            <span class="bento-date">{{ timeformat().format(new Date(base[1].metadata.date)) }}</span>
-          </div>
-        </div>
-      </router-link>
-
-      <router-link :to="base[2].slug" class="bento-card bento-small-1">
-        <div class="bento-image-wrapper">
-          <v-img :src="base[2].metadata.image" :alt="base[2].metadata.title" class="bento-image" cover />
-        </div>
-        <div class="bento-overlay">
-          <div class="bento-tags">
-            <span class="bento-category">{{ base[2].metadata.category }}</span>
-          </div>
-          <h3 class="bento-title bento-title-sm">{{ base[2].metadata.title }}</h3>
-          <div class="bento-meta">
-            <span class="bento-author">{{ base[2].metadata.author }}</span>
-            <span class="meta-dot">•</span>
-            <span class="bento-date">{{ timeformat().format(new Date(base[2].metadata.date)) }}</span>
-          </div>
-        </div>
-      </router-link>
-
-      <!-- Wide Card -->
-      <router-link :to="base[3].slug" class="bento-card bento-wide">
-        <div class="bento-image-wrapper">
-          <v-img :src="base[3].metadata.image" :alt="base[3].metadata.title" class="bento-image" cover />
-        </div>
-        <div class="bento-overlay bento-overlay-gradient">
-          <div class="bento-tags">
-            <span class="bento-category">{{ base[3].metadata.category }}</span>
-          </div>
-          <h3 class="bento-title bento-title-md">{{ base[3].metadata.title }}</h3>
-          <div class="bento-meta">
-            <span class="bento-author">{{ base[3].metadata.author }}</span>
-            <span class="meta-dot">•</span>
-            <span class="bento-date">{{ timeformat().format(new Date(base[3].metadata.date)) }}</span>
-          </div>
-        </div>
-      </router-link>
-
-      <!-- Medium Card 2 -->
-      <router-link :to="base[4].slug" class="bento-card bento-medium-2">
-        <div class="bento-image-wrapper">
-          <v-img :src="base[4].metadata.image" :alt="base[4].metadata.title" class="bento-image" cover />
-        </div>
-        <div class="bento-overlay">
-          <div class="bento-tags">
-            <span class="bento-category">{{ base[4].metadata.category }}</span>
-          </div>
-          <h3 class="bento-title bento-title-md">{{ base[4].metadata.title }}</h3>
-          <div class="bento-meta">
-            <span class="bento-author">{{ base[4].metadata.author }}</span>
-            <span class="meta-dot">•</span>
-            <span class="bento-date">{{ timeformat().format(new Date(base[4].metadata.date)) }}</span>
-          </div>
-        </div>
-      </router-link>
-
-      <!-- Long Card -->
-      <router-link :to="base[5].slug" class="bento-card bento-small-2">
-        <div class="bento-image-wrapper">
-          <v-img :src="base[5].metadata.image" :alt="base[5].metadata.title" class="bento-image" cover />
-        </div>
-        <div class="bento-overlay">
-          <div class="bento-tags">
-            <span class="bento-category">{{ base[5].metadata.category }}</span>
-          </div>
-          <h3 class="bento-title bento-title-sm">{{ base[5].metadata.title }}</h3>
-
-            <div class="bento-meta">
-            <span class="bento-author">{{ base[5].metadata.author }}</span>
-            <span class="meta-dot">•</span>
-            <span class="bento-date">{{ timeformat().format(new Date(base[5].metadata.date)) }}</span>
-            </div>
         </div>
       </router-link>
     </section>
@@ -144,24 +70,13 @@ background-image: linear-gradient(
     rgba(0, 0, 0, 0.7) 0%, /* 50% de oscuridad arriba */
     rgba(0, 0, 0, 1) 100% /* 80% de oscuridad abajo */
   ), 
-  url('@/assets/banner.png');  
+  url('@/assets/banner.webp');  
   background-size: cover;
   
 }
 
-.masthead-title {
-  font-family: 'Montserrat', sans-serif;
-  font-size: clamp(1.75rem, 4vw, 2.5rem);
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.95);
-  margin: 0 0 12px;
-  line-height: 1.1;
-}
-
 .masthead-tagline {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: clamp(0.875rem, 2vw, 1.05rem);
   font-weight: 400;
   color: rgba(255, 255, 255, 0.6);
@@ -298,14 +213,6 @@ background-image: linear-gradient(
 }
 
 
--alt {
-  background: linear-gradient(to top,
-      rgba(99, 102, 241, 0.88) 0%,
-      rgba(99, 102, 241, 0.55) 45%,
-      rgba(99, 102, 241, 0.15) 75%,
-      transparent 100%);
-}
-
 /* ─────────────────────────────────────────────────────────────
    TYPOGRAPHY - Títulos y textos
    ───────────────────────────────────────────────────────────── */
@@ -315,7 +222,7 @@ background-image: linear-gradient(
 
 .bento-category {
   display: inline-block;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 0.7rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -328,7 +235,7 @@ background-image: linear-gradient(
 }
 
 .bento-title {
-  font-family: 'Montserrat', sans-serif;
+  font-family: var(--font-heading);
   font-weight: 700;
   color: rgba(255, 255, 255, 0.98);
   margin: 0 0 10px;
@@ -357,7 +264,7 @@ background-image: linear-gradient(
   display: flex;
   align-items: center;
   gap: 8px;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.6);
   flex-wrap: wrap;
@@ -439,11 +346,6 @@ background-image: linear-gradient(
     padding: 32px 12px 24px;
   }
 
-  .masthead-title {
-    font-size: 1.5rem;
-    letter-spacing: 0.05em;
-  }
-
   .masthead-tagline {
     font-size: 0.85rem;
   }
@@ -509,10 +411,6 @@ background-image: linear-gradient(
 @media (max-width: 380px) {
   .blog-index {
     padding: 0 12px 24px;
-  }
-
-  .masthead-title {
-    font-size: 1.3rem;
   }
 
   .bento-hero {

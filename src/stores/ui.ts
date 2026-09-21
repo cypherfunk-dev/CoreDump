@@ -2,6 +2,40 @@ import { defineStore } from 'pinia';
 import database from '../database/db.json';
 import MiniSearch, { type SearchOptions } from 'minisearch';
 
+export interface Article {
+  id: string;
+  slug: string;
+  metadata: {
+    title: string;
+    date: string;
+    category?: string;
+    tags?: string;
+    author?: string;
+    abstract?: string;
+    image?: string;
+  };
+}
+
+// Artículos ordenados del más reciente al más antiguo (fuente única para
+// portada, sidebar y página de artículo).
+export const articles: Article[] = [...(database as Article[])].sort(
+  (a, b) => new Date(b.metadata.date).getTime() - new Date(a.metadata.date).getTime()
+);
+
+export const findArticle = (slug: string) => articles.find(a => a.slug === slug);
+
+// Tags únicos ordenados por frecuencia (para la nube de tags del sidebar).
+export const popularTags: string[] = (() => {
+  const count = new Map<string, number>();
+  for (const a of articles) {
+    for (const tag of (a.metadata.tags ?? '').split(',')) {
+      const t = tag.trim();
+      if (t) count.set(t, (count.get(t) ?? 0) + 1);
+    }
+  }
+  return [...count.entries()].sort((a, b) => b[1] - a[1]).map(([t]) => t);
+})();
+
 const accessNested = (obj: any, path: string) => {
   return path.split('.').reduce((doc, key) => {
     const intKey = parseInt(key, 10);
@@ -57,6 +91,19 @@ export const useUiStore = defineStore('ui', {
     loading: false,
     advancedOptions: { ...defaultSearchOptions } as AdvancedSearchOptions
   }),
+  getters: {
+    // Resultados de la búsqueda simple (navbar/modal). Al ser un getter se
+    // cachea y solo se recalcula cuando cambia `search`.
+    results: (state) => {
+      const val = state.search.trim();
+      if (!val) return [];
+      return miniSearch.search(removeAccents(val), {
+        prefix: true,
+        fuzzy: 0.2,
+        boost: { 'metadata.title': 2, 'metadata.tags': 1.5 }
+      });
+    }
+  },
   actions: {
     toggleSearch() {
       this.searchbar = !this.searchbar;
@@ -77,19 +124,6 @@ export const useUiStore = defineStore('ui', {
       this.advancedOptions[key] = value;
     },
     
-    // Simple search (for navbar/modal)
-    queryChange(val: string) {
-      this.search = val;
-      if (!val || val.trim() === '') return [];
-      
-      const results = miniSearch.search(removeAccents(val), {
-        prefix: true,
-        fuzzy: 0.2,
-        boost: { 'metadata.title': 2, 'metadata.tags': 1.5 }
-      });
-      return results;
-    },
-    
     // Advanced search with options
     advancedSearch(val: string, options?: Partial<AdvancedSearchOptions>) {
       this.search = val;
@@ -105,7 +139,7 @@ export const useUiStore = defineStore('ui', {
       };
       
       // Map search fields to MiniSearch field names
-      const fieldMap: Record<string, string> = {
+      const fieldMap: Record<AdvancedSearchOptions['searchFields'][number], string> = {
         'title': 'metadata.title',
         'tags': 'metadata.tags',
         'abstract': 'metadata.abstract',
@@ -115,12 +149,9 @@ export const useUiStore = defineStore('ui', {
       
       // Build boost object based on selected fields
       const boost: Record<string, number> = {};
-      opts.searchFields.forEach(field => {
-        const mappedField = fieldMap[field];
-        if (field === 'title') boost[mappedField] = 2;
-        else if (field === 'tags') boost[mappedField] = 1.5;
-        else boost[mappedField] = 1;
-      });
+      for (const field of opts.searchFields) {
+        boost[fieldMap[field]] = field === 'title' ? 2 : field === 'tags' ? 1.5 : 1;
+      }
       
       // Build search options
       const searchOptions: SearchOptions = {

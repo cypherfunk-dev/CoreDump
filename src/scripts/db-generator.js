@@ -1,54 +1,41 @@
-import fs from 'fs';
-import path from 'path';
+import { readdir, writeFile } from 'node:fs/promises';
+import path from 'node:path';
 import matter from 'gray-matter';
 
-const dbRoute = path.resolve( './src/database/db.json');
-
-const mdFolder = path.resolve('./public/markdowns')
-
-import { readdir } from 'node:fs/promises';
-import { resolve } from 'node:path';
+const dbRoute = path.resolve('./src/database/db.json');
+const mdFolder = path.resolve('./public/markdowns');
 
 /**
- * An asynchronous generator function to get all files in a directory recursively.
- * @param {string} dir The directory path to start the search from.
+ * Recorre un directorio de forma recursiva y devuelve todos los archivos .md.
+ * @param {string} dir
+ * @returns {AsyncGenerator<string>}
  */
-async function* getFiles(dir) {
+async function* getMarkdownFiles(dir) {
     for (const dirent of await readdir(dir, { withFileTypes: true })) {
-        const res = resolve(dir, dirent.name);
-        if (dirent.isDirectory()) {
-            yield* getFiles(res); // Recursively call the generator for subdirectories
-        } else {
-            yield res; // Yield the full path of the file
-        }
+        const res = path.resolve(dir, dirent.name);
+        if (dirent.isDirectory()) yield* getMarkdownFiles(res);
+        else if (dirent.name.endsWith('.md')) yield res;
     }
 }
 
-(async () => {
-    const directoryPath = mdFolder; 
-    console.log(`Scanning directory: ${directoryPath}`);
-    fs.writeFileSync(dbRoute,  '' );
-    let index = 0;
-    for await (const file of getFiles(directoryPath) )  {
+console.log(`Scanning directory: ${mdFolder}`);
 
-        const parsed = file.split(path.sep);
-        const slug =  '/articles/'+ parsed[parsed.length - 2]+'/'+parsed[parsed.length - 1].replace('.md','');
-        const stringtoobject = JSON.parse('{"id": "'+index+'", "slug": "'+slug+'", "metadata": ' + JSON.stringify(matter.read(file).data) + ' }');
-        // fs.appendFileSync(dbRoute,  '{ "slug": "'+slug+'", "metadata": ' + JSON.stringify(matter.read(file).data) + ' },\n' );
-        
-        if (index === 0) {
-            fs.appendFileSync(dbRoute,  '[' + JSON.stringify(stringtoobject) + ',\n' );
-        } else {
-            fs.appendFileSync(dbRoute,  JSON.stringify(stringtoobject) + ',\n' );
-        }
-        index++;
+const articles = [];
+for await (const file of getMarkdownFiles(mdFolder)) {
+    const year = path.basename(path.dirname(file));
+    const slug = path.basename(file, '.md');
+    const { data } = matter.read(file);
+
+    if (!data.title || !data.date) {
+        console.warn(`  ! ${year}/${slug}.md sin title/date en el frontmatter, se omite`);
+        continue;
     }
-    // eliminate last comma and close the array
-    const data = fs.readFileSync(dbRoute, 'utf8');
-    const updatedData = data.replace(/,\n$/, '\n');
-    fs.writeFileSync(dbRoute, updatedData);
-    fs.appendFileSync(dbRoute,  ']' );
-    console.log('Database generation completed.');
-})();
+    articles.push({ slug: `/articles/${year}/${slug}`, metadata: data });
+}
 
-// todo replace blank spaces with underscores in slugs and filenames
+// Más reciente primero; el id se asigna tras ordenar para que sea estable.
+articles.sort((a, b) => new Date(b.metadata.date) - new Date(a.metadata.date));
+const db = articles.map((a, i) => ({ id: String(i), ...a }));
+
+await writeFile(dbRoute, JSON.stringify(db, null, 2) + '\n');
+console.log(`  ${db.length} artículos -> ${dbRoute}`);

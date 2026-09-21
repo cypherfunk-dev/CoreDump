@@ -28,7 +28,7 @@ import siteTexts from '../database/site-texts.json';
 }
 
 .footer-brand {
-  font-family: 'Montserrat', sans-serif;
+  font-family: var(--font-heading);
   font-size: 0.95rem;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -38,7 +38,7 @@ import siteTexts from '../database/site-texts.json';
 }
 
 .footer-copy {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.4);
   margin: 0;

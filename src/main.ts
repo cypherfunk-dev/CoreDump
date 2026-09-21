@@ -15,6 +15,8 @@ import { createApp } from "vue";
 
 // Styles
 import "unfonts.css";
+import "@fontsource-variable/inter";
+import "@fontsource-variable/montserrat";
 import "@/styles/markdown-view.sass";
 
 // Stores

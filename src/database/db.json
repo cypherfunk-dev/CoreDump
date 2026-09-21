@@ -1,7 +1,28 @@
-[{"id":"0","slug":"/articles/2025/analisis_forense_del_boligrafo_no_retornado","metadata":{"title":"Análisis Forense del Bolígrafo No Retornado: Impacto Cero-Day en la Productividad TI","date":"2025-12-03T00:00:00.000Z","category":"Ingeniería de Procesos y Ergonomía de Oficina","tags":"cero_day, bolígrafos, seguridad, supply_chain, psicología_organizacional, robo_hormiga","author":"Departamento de Soporte Mental (División de Recursos Tangibles Críticos)","abstract":"Este estudio aborda rigurosamente la sistemática desaparición de instrumentos de escritura de los escritorios de personal de TI. Se modela el fenómeno como un 'Exploit de Confianza' con un impacto económico subestimado en la cadena de suministro de la oficina, proponiendo soluciones de *hardening* a nivel de papelería.","image":"/images/2025/uno.png"}},
-{"id":"1","slug":"/articles/2025/apagar-notebook-con-bate-no-es-metodo-recomendado","metadata":{"title":"Por qué apagar un notebook con un bate no es un método recomendado (ni técnico)","date":"2025-11-29T00:00:00.000Z","category":"Hardware","tags":"seguridad, mantenimiento, humor, destruccion_ineficiente","author":"Departamento de Soporte Mental","abstract":"Exploramos técnicamente el mito urbano de apagar notebooks con un bate y por qué es una brillante mala idea.","image":"/images/2025/dos.png"}},
-{"id":"2","slug":"/articles/2025/configurar-servidor-mayordomo-personal","metadata":{"title":"Cómo configurar un servidor para que se convierta en tu nuevo mayordomo personal (y lo haga todo por ti)","date":"2025-12-10T00:00:00.000Z","category":"Hardware","tags":"configuración, servidor, humor, tecnología_innecesaria","author":"Departamento de Tecnología Absurda","abstract":"Te guiamos paso a paso para configurar un servidor que no solo administre tus archivos, sino que también sea tu nuevo asistente personal, aunque no lo pidas.","image":"/images/2025/seis.png"}},
-{"id":"3","slug":"/articles/2025/curvatura_espacial_negativa_conector_usb","metadata":{"title":"La Curvatura Espacial Negativa: Una Reevaluación de la Constante de Orientación del Conector USB","date":"2025-12-04T00:00:00.000Z","category":"Ingeniería de Conectividad y Física Teórica Aplicada","tags":"usb, puerto, física_cuántica, frustración, relatividad, entropía","author":"Laboratorio de Tensión Humana y Conectividad (LTHC)","abstract":"Este estudio formaliza la **Constante de Orientación de Frustración (COF)**, una ley empírica que postula que la probabilidad de que un conector USB de Tipo A esté correctamente orientado es inversamente proporcional a la urgencia de conexión del usuario. Se exploran las implicaciones de la curvatura del espacio-tiempo local en la dinámica de inserción.","image":"/images/2025/tres.png"}},
-{"id":"4","slug":"/articles/2025/por-que-limpiar-pc-con-secador-es-desastre-caluroso","metadata":{"title":"Por qué intentar ‘limpiar’ tu PC con un secador de pelo es un desastre caluroso (literalmente)","date":"2025-12-10T00:00:00.000Z","category":"Hardware","tags":"mantenimiento, seguridad, humor, destruccion_excesiva","author":"Departamento de Soporte Mental","abstract":"Un análisis exhaustivo de por qué el secador de pelo no es la herramienta adecuada para combatir el polvo en tu PC y por qué es un error caluroso y arriesgado.","image":"/images/2025/cinco.png"}},
-{"id":"5","slug":"/articles/2026/Infografia_Protocolos_de_Erradicacion_de_Latencia_y_Virtualizacion_de_Pantallas_(Operacion_Moonshine)","metadata":{"title":"Infografía: Protocolos de Erradicación de Latencia y Virtualización de Pantallas (Operación Moonshine)","date":"2026-04-25T00:00:00.000Z","category":"Streaming de Baja Latencia y Geometría de Monitores No Físicos","tags":"latencia_cero, sunshine, moonlight, monitor_fantasma, VDD, hisense","author":"Departamento de Soporte Mental Avanzado (DSMA)","abstract":"Este documento examina, desde una perspectiva de arquitectura de redes, la mitigación de la latencia nativa (asociada a protocolos estándar como Chromecast) mediante la topología cliente-servidor. Se detalla la instanciación de un monitor no-euclidiano (Virtual Display Driver) para forzar el estado de \"Escritorio Extendido\" hacia un hardware receptor Hisense, minimizando el factor de fricción visual ($\\Delta t_{\\text{latencia}} \\approx 0$).","image":"/images/2026/sunshine_minimal_logo.png"}}
+[
+  {
+    "id": "0",
+    "slug": "/articles/2026/Infografia_Protocolos_de_Erradicacion_de_Latencia_y_Virtualizacion_de_Pantallas_(Operacion_Moonshine)",
+    "metadata": {
+      "title": "Infografía: Protocolos de Erradicación de Latencia y Virtualización de Pantallas (Operación Moonshine)",
+      "date": "2026-04-25T00:00:00.000Z",
+      "category": "Streaming de Baja Latencia y Geometría de Monitores No Físicos",
+      "tags": "latencia_cero, sunshine, moonlight, monitor_fantasma, VDD, hisense",
+      "author": "Departamento de Soporte Mental Avanzado (DSMA)",
+      "abstract": "Este documento examina, desde una perspectiva de arquitectura de redes, la mitigación de la latencia nativa (asociada a protocolos estándar como Chromecast) mediante la topología cliente-servidor. Se detalla la instanciación de un monitor no-euclidiano (Virtual Display Driver) para forzar el estado de \"Escritorio Extendido\" hacia un hardware receptor Hisense, minimizando el factor de fricción visual ($\\Delta t_{\\text{latencia}} \\approx 0$).",
+      "image": "/images/2026/sunshine_minimal_logo.webp"
+    }
+  },
+  {
+    "id": "1",
+    "slug": "/articles/2025/Guia_Definitiva_Limpieza_y_Reinstalación_de_Office_Error_de_Version_LTSC",
+    "metadata": {
+      "title": "Guía Definitiva: Limpieza y Reinstalación de Office (Error de Versión LTSC)",
+      "date": "2026-01-02T00:00:00.000Z",
+      "category": "Software",
+      "tags": "office, windows, ltsc, licencias, drm",
+      "author": "CoreDump Admin",
+      "abstract": "Guía definitiva para eliminar instalaciones persistentes de Office LTSC cuando los métodos convencionales fallan. Se detalla un proceso de tres etapas: desinstalación forzada con herramientas externas, limpieza manual de directorios críticos y registros, y la depuración final de licencias mediante ospp.vbs tras la reinstalación. Ideal para resolver conflictos de 'versión incorrecta' o bloqueos en el instalador.",
+      "image": "/images/2025/cuatro.webp"
+    }
+  }
 ]

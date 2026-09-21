@@ -1,36 +1,11 @@
 <script setup lang="ts">
 import { useUiStore } from '../stores/ui';
 import siteTexts from '../database/site-texts.json';
-import { watch, ref, nextTick } from 'vue';
-import { computed,  } from 'vue';
+import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 const ui = useUiStore();
-const searchField = ref(null);
 const route = useRoute();
-const isSearchPage = computed (() => {
-    return route.fullPath.startsWith('/search/');
-});
-
-
-watch(isSearchPage, (newValue) => {
-    if (newValue) {
-        console.log(newValue);
-        nextTick(() => {
-            (searchField.value as any)?.focus();
-        });
-    }
-}, { immediate: true }
-);
-
-
-
-watch(() => ui.searchbar, (newValue) => {
-    if (newValue) {
-        nextTick(() => {
-            (searchField.value as any)?.focus();
-        });
-    }
-});
+const isSearchPage = computed(() => route.path.startsWith('/search'));
 </script>
 
 <template>
@@ -66,7 +41,7 @@ watch(() => ui.searchbar, (newValue) => {
 }
 
 .v-app-bar-title .spacing-title {
-  font-family: 'Montserrat', sans-serif;
+  font-family: var(--font-heading);
   letter-spacing: 0.15em !important;
   font-size: 1.15rem !important;
   font-weight: 700;
