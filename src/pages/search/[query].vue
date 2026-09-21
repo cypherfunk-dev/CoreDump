@@ -1,11 +1,14 @@
 <script lang="ts" setup>
-import { useUiStore, availableCategories, defaultSearchOptions, type AdvancedSearchOptions } from '../../stores/ui';
+import { useUiStore, availableCategories, type AdvancedSearchOptions, type SearchField } from '@/stores/ui';
 import { useRoute, useRouter } from 'vue-router';
 import { computed, watch, onMounted, ref } from 'vue';
-import siteTexts from '@/database/site-texts.json';
-import dateParser from '@/utils/dateparser';
+import { useTexts } from '@/utils/i18n';
+import { useHead } from '@unhead/vue';
+import { formatDate } from '@/utils/dateparser';
 
 const ui = useUiStore();
+const texts = useTexts();
+ui.ensureSearchIndex();
 const route = useRoute();
 const router = useRouter();
 
@@ -17,7 +20,7 @@ const query = computed(() => decodeURIComponent(route.params.query as string || 
 
 // Search results computed from query using advanced search
 const results = computed(() => {
-  if (!query.value) return [];
+  if (!query.value || !ui.searchReady) return [];
   return ui.advancedSearch(query.value);
 });
 
@@ -39,7 +42,7 @@ function handleSearch() {
 }
 
 // Toggle field in search fields array
-function toggleSearchField(field: 'title' | 'tags' | 'abstract' | 'category' | 'author') {
+function toggleSearchField(field: SearchField) {
   const fields = [...ui.advancedOptions.searchFields];
   const idx = fields.indexOf(field);
   if (idx > -1) {
@@ -66,7 +69,8 @@ const fieldLabels: Record<string, string> = {
   tags: 'Tags',
   abstract: 'Resumen',
   category: 'Categoría',
-  author: 'Autor'
+  author: 'Autor',
+  body: 'Contenido'
 };
 
 // Fuzzy level labels
@@ -87,17 +91,19 @@ const sortOptions = [
 onMounted(() => {
   ui.search = query.value;
 });
+
+useHead({ title: computed(() => `${texts.advancedSearch}: ${query.value}`), meta: [{ name: 'robots', content: 'noindex' }] });
 </script>
 
 <template>
   <div class="search-page">
     <!-- Search Header -->
     <div class="search-header">
-      <h1 class="search-page-title">{{ siteTexts.advancedSearch || 'Búsqueda Avanzada' }}</h1>
+      <h1 class="search-page-title">{{ texts.advancedSearch }}</h1>
       <div class="search-input-wrapper">
         <v-text-field
           v-model="ui.search"
-          :placeholder="siteTexts.searchPlaceholder"
+          :placeholder="texts.searchPlaceholder"
           variant="outlined"
           density="comfortable"
           hide-details
@@ -262,8 +268,9 @@ onMounted(() => {
           en {{ ui.advancedOptions.categoryFilter }}
         </span>
       </span>
+      <span v-else-if="!ui.searchReady" class="no-results">{{ texts.searchLoading }}</span>
       <span v-else class="no-results">
-        {{ siteTexts.noResultsFound || 'No se encontraron resultados' }} para "<strong>{{ query }}</strong>"
+        {{ texts.noResultsFound }} para "<strong>{{ query }}</strong>"
       </span>
     </div>
 
@@ -272,22 +279,22 @@ onMounted(() => {
       <router-link
         v-for="result in results"
         :key="result.id"
-        :to="result.slug"
+        :to="result.url"
         class="search-result-card-link"
       >
         <article class="search-result-card">
           <div class="result-content">
-            <span class="result-category">{{ result['metadata.category'] || 'General' }}</span>
-            <h3 class="result-title">{{ result['metadata.title'] }}</h3>
-            <p class="result-abstract">{{ result['metadata.abstract'] }}</p>
+            <span class="result-category">{{ result.category || 'General' }}</span>
+            <h3 class="result-title">{{ result.title }}</h3>
+            <p class="result-abstract">{{ result.abstract }}</p>
             <div class="result-meta">
-              <span class="result-author" v-if="result['metadata.author']">
+              <span class="result-author" v-if="result.author">
                 <v-icon size="x-small">mdi-account</v-icon>
-                {{ result['metadata.author'] }}
+                {{ result.author }}
               </span>
               <span class="result-date">
                 <v-icon size="x-small">mdi-calendar</v-icon>
-                {{ dateParser().format(new Date(result['metadata.date'])) }}
+                {{ formatDate(result.date) }}
               </span>
               <span class="result-score" v-if="result.score && ui.advancedOptions.sortBy === 'relevance'">
                 <v-icon size="x-small">mdi-star</v-icon>
@@ -307,18 +314,18 @@ onMounted(() => {
         Tip: Prueba cambiar a búsqueda "Normal" o "Amplia" para más resultados
       </p>
       <router-link to="/" class="back-home-link">
-        <v-btn variant="outlined">{{ siteTexts.goBackHome || 'Volver al Inicio' }}</v-btn>
+        <v-btn variant="outlined">{{ texts.goBackHome }}</v-btn>
       </router-link>
     </div>
   </div>
 </template>
 
 <style lang="sass" scoped>
-$search-bg: #1a1a1a
-$search-surface: #242424
-$search-accent: #3a7569
-$search-text: #f0f0f0
-$search-text-muted: #a0a0a0
+$search-bg: rgb(var(--v-theme-background))
+$search-surface: rgb(var(--v-theme-surface))
+$search-accent: rgb(var(--v-theme-primary))
+$search-text: rgb(var(--v-theme-on-surface))
+$search-text-muted: rgba(var(--v-theme-on-surface), 0.6)
 
 .search-page
   background: $search-bg
@@ -381,7 +388,7 @@ $search-text-muted: #a0a0a0
   margin: 0 auto 32px
   background: $search-surface
   border-radius: 12px
-  border: 1px solid rgba(255,255,255,0.08)
+  border: 1px solid rgba(var(--v-theme-on-surface), 0.08)
 
 .advanced-panel-content
   padding: 24px
@@ -436,12 +443,12 @@ $search-text-muted: #a0a0a0
 .reset-row
   display: flex
   justify-content: flex-end
-  border-top: 1px solid rgba(255,255,255,0.08)
+  border-top: 1px solid rgba(var(--v-theme-on-surface), 0.08)
   padding-top: 16px
   margin-top: 8px
 
 .filter-badge
-  background: rgba($search-accent, 0.2)
+  background: rgba(var(--v-theme-primary), 0.2)
   color: $search-accent
   padding: 2px 8px
   border-radius: 4px

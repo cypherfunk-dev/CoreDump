@@ -1,16 +1,12 @@
-$color-primario: #3a7569
+// Colores: se toman del tema de Vuetify (claro/oscuro) vía variables CSS.
+// `primary` es el acento; `on-surface` el texto; `surface`/`background` los fondos.
+$primary: rgb(var(--v-theme-primary))
+$on-surface: var(--v-theme-on-surface)
+$surface: rgb(var(--v-theme-surface))
+$background: rgb(var(--v-theme-background))
+$border: rgba(var(--v-theme-on-surface), 0.1)
 $fuente-principal: 'Inter Variable', sans-serif
 $fuente-secundaria: 'Montserrat Variable', sans-serif
-$text-primary: #ddddddff
-$text-secondary: #8f8f8fff
-$text-dark: #212121
-$alternative1: #C1DBE3
-$alternative2: #C7DFC5
-$alternative3: #F0F7EE
-$alternative4: #AFB3F7
-$alternative5: #C1BCAC
-$alternative6: #96c5f727
-
 
 \:root
   --font-body: #{$fuente-principal}
@@ -20,7 +16,7 @@ html
   overflow-y: auto
 
 .markdown-container
-  background-color: $text-dark
+  background-color: $background
   font-family: $fuente-principal
   min-height: 100vh
   padding: 40px
@@ -71,14 +67,14 @@ html
     padding-bottom: 50px
 
   h2
-    border-bottom: 2px solid $color-primario
+    border-bottom: 2px solid $primary
     padding-bottom: 5px
     margin-top: 30px
     margin-bottom: 20px
     letter-spacing: 3px
 
   a
-    color: $color-primario
+    color: $primary
     text-decoration: none
 
     &:hover
@@ -93,9 +89,9 @@ html
     font-size: 0.95em
     margin: 10px
     padding: 20px
-    border: 1px solid rgba($color-primario, 0.7)
+    border: 1px solid rgba(var(--v-theme-primary), 0.5)
     border-radius: 4px
-    background-color: rgba($color-primario, 0.1)
+    background-color: rgba(var(--v-theme-primary), 0.08)
     .metadata-item
       margin-bottom: 8px
 
@@ -127,16 +123,14 @@ html
   display: flex
   flex-wrap: wrap
   border-radius: 30px
-  border: 1px solid rgba($color-primario, 0.7)
-  background: #0F2027
-  background: -webkit-linear-gradient(to right, #2c5364a6, #203a432a, #0f2027b3)
-  background: linear-gradient(to right, #2c5364a6, #203a4329, #0f2027b3)
-  color: $text-secondary
+  border: 1px solid rgba(var(--v-theme-primary), 0.4)
+  background: rgba(var(--v-theme-primary), 0.06)
+  color: rgba($on-surface, 0.7)
   justify-content: center
 
   .tag
-    background-color: $alternative5
-    color: $text-dark
+    background-color: rgba(var(--v-theme-primary), 0.15)
+    color: rgb($on-surface)
     padding: 5px 10px
     border-radius: 15px
     font-size: 0.85em
@@ -167,7 +161,7 @@ html
   justify-content: center
   gap: 15px
   v-icon
-    color: $color-primario
+    color: $primary
     font-size: 28px
     cursor: pointer
     transition: transform 0.2s
@@ -178,14 +172,14 @@ html
 .sidebar-title
   font-size: 1.5em
   font-weight: bold
-  color: $alternative2
+  color: $primary
   text-align: center
   padding-bottom: 8px
   letter-spacing: 1px
 
 .sidebar-subtitle
   font-size: 0.9em
-  color: $alternative5
+  color: rgba($on-surface, 0.7)
 
 .recent-articles-view
   padding-top: 30px
@@ -196,303 +190,170 @@ html
       margin-bottom: 30px
 
 // =============================================
-// BLOG INDEX STYLES - Newspaper/Magazine Layout
+// LISTADOS (tags, categorías)
 // =============================================
+.listing-page
+  max-width: 900px
 
-$blog-bg: #1a1a1a
-$blog-surface: #242424
-$blog-accent: $color-primario
-$blog-text: #f0f0f0
-$blog-text-muted: #a0a0a0
-$blog-border: rgba(255,255,255,0.08)
-
-// Masthead / Header
-.blog-index
-  background: $blog-bg
-  min-height: 100vh
-  padding: 0
-
-.blog-masthead
-  text-align: center
-  padding: 48px 24px 32px
-  border-bottom: 1px solid $blog-border
-  background: linear-gradient(180deg, rgba($blog-accent, 0.08) 0%, transparent 100%)
-
-.masthead-title
-  font-family: 'Montserrat', $fuente-secundaria
-  font-size: clamp(2rem, 5vw, 3.5rem)
-  font-weight: 800
-  letter-spacing: -1px
-  color: $blog-text
-  margin: 0
+.listing-kicker
+  font-size: 0.75rem
   text-transform: uppercase
+  letter-spacing: 0.1em
+  opacity: 0.6
+  margin: 0
 
-.masthead-tagline
-  font-family: $fuente-principal
-  font-size: 1rem
-  color: $blog-text-muted
-  margin: 8px 0 0
-  font-style: italic
-  letter-spacing: 0.5px
+.listing-title
+  font-family: $fuente-secundaria
+  font-size: clamp(1.6rem, 4vw, 2.4rem)
+  margin: 4px 0 8px
 
-.masthead-divider
-  width: 80px
-  height: 3px
-  background: $blog-accent
-  margin: 24px auto 0
-  border-radius: 2px
-
-// =============================================
-// BENTO GRID LAYOUT - All cards with image overlay
-// =============================================
-
-.bento-grid
-  max-width: 1200px
-  margin: 0 auto
-  padding: 40px 24px 60px
-  display: grid
-  grid-template-columns: repeat(4, 1fr)
-  grid-template-rows: auto auto auto
-  gap: 20px
-
-// Card base styles
-.bento-card
-  position: relative
-  border-radius: 16px
-  overflow: hidden
+.listing-back
+  color: $primary
   text-decoration: none
-  color: inherit
-  display: block
-  transition: transform 0.35s ease, box-shadow 0.35s ease
+  font-size: 0.9rem
   &:hover
-    transform: translateY(-6px)
-    box-shadow: 0 20px 50px rgba(0,0,0,0.5)
-  &:hover .bento-image
-    transform: scale(1.08)
+    text-decoration: underline
 
-.bento-image-wrapper
-  position: absolute
-  inset: 0
-  z-index: 1
+// =============================================
+// CUERPO DEL ARTÍCULO (salida de build/markdown.ts)
+// =============================================
+.markdown-content
+  h2, h3, h4
+    scroll-margin-top: 80px
+    .header-anchor
+      color: inherit
+      text-decoration: none
+      &::after
+        content: ' #'
+        opacity: 0
+        color: $primary
+        font-weight: 400
+        transition: opacity 0.15s
+    &:hover .header-anchor::after
+      opacity: 0.7
 
-.bento-image
-  width: 100%
-  height: 100%
-  object-fit: cover
-  transition: transform 0.5s ease
+  h3
+    margin: 24px 0 12px
+    letter-spacing: 1px
 
-// Overlay styles
-.bento-overlay
-  position: absolute
-  inset: 0
-  z-index: 2
-  background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.6) 40%, rgba(0,0,0,0.25) 100%)
-  padding: 24px
-  display: flex
-  flex-direction: column
-  justify-content: flex-end
+  ul, ol
+    padding-left: 1.6em
+    margin-bottom: 15px
 
-.bento-overlay-dark
-  background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.7) 50%, rgba(0,0,0,0.3) 100%)
+  li
+    margin-bottom: 4px
 
-.bento-overlay-gradient
-  background: linear-gradient(135deg, rgba(58,117,105,0.85) 0%, rgba(0,0,0,0.9) 100%)
+  blockquote
+    margin: 16px 0
+    padding: 8px 20px
+    border-left: 4px solid rgba(var(--v-theme-primary), 0.8)
+    background: rgba(var(--v-theme-primary), 0.08)
+    border-radius: 0 6px 6px 0
+    p:last-child
+      margin-bottom: 0
 
-.bento-overlay-accent
-  background: linear-gradient(to top, rgba(58,117,105,0.95) 0%, rgba(58,117,105,0.7) 50%, rgba(0,0,0,0.4) 100%)
+  code
+    font-family: 'Cascadia Code', 'Fira Code', Consolas, monospace
+    font-size: 0.9em
 
-.bento-overlay-accent-alt
-  background: linear-gradient(to top, rgba(175,179,247,0.9) 0%, rgba(100,100,180,0.6) 50%, rgba(0,0,0,0.3) 100%)
+  :not(pre) > code
+    padding: 2px 6px
+    border-radius: 4px
+    background: rgba($on-surface, 0.08)
+    color: rgb(var(--v-theme-code-inline))
 
-// Tags & Category
-.bento-tags
-  display: flex
-  gap: 8px
-  flex-wrap: wrap
-  margin-bottom: 12px
+  // shiki con tema dual: el color activo depende del tema de Vuetify
+  .v-theme--light & pre.shiki, .v-theme--light & pre.shiki span
+    color: var(--shiki-light)
+    background-color: var(--shiki-light-bg)
+  .v-theme--dark & pre.shiki, .v-theme--dark & pre.shiki span
+    color: var(--shiki-dark)
+    background-color: var(--shiki-dark-bg)
 
-.bento-category
-  display: inline-block
-  font-family: $fuente-principal
-  font-size: 0.65rem
-  font-weight: 700
-  text-transform: uppercase
-  letter-spacing: 1.5px
-  color: #fff
-  padding: 5px 12px
-  background: rgba(255,255,255,0.15)
-  backdrop-filter: blur(4px)
-  border-radius: 20px
-  border: 1px solid rgba(255,255,255,0.2)
+  pre.shiki
+    margin: 16px 0
+    padding: 16px 20px
+    border-radius: 8px
+    overflow-x: auto
+    font-size: 0.875rem
+    line-height: 1.6
+    border: 1px solid $border
+    code
+      display: block
+      background: transparent
+      padding: 0
 
-// Titles
-.bento-title
-  font-family: 'Montserrat', $fuente-secundaria
-  font-weight: 700
-  color: #fff
-  margin: 0
-  text-shadow: 0 2px 12px rgba(0,0,0,0.5)
-  line-height: 1.2
+  table
+    width: 100%
+    border-collapse: collapse
+    margin: 16px 0
+    font-size: 0.92em
+    display: block
+    overflow-x: auto
+    th, td
+      padding: 8px 12px
+      border: 1px solid $border
+      text-align: left
+    th
+      background: rgba(var(--v-theme-primary), 0.12)
+      font-weight: 700
+    tr:nth-child(even) td
+      background: rgba($on-surface, 0.02)
 
-.bento-title-lg
-  font-size: clamp(1.6rem, 3vw, 2.2rem)
-  margin-bottom: 16px
+  hr
+    border: 0
+    border-top: 1px solid $border
+    margin: 32px 0
 
-.bento-title-md
-  font-size: clamp(1.1rem, 2vw, 1.4rem)
-  margin-bottom: 12px
+  img
+    max-width: 100%
+    height: auto
+    border-radius: 8px
 
-.bento-title-sm
-  font-size: clamp(0.95rem, 1.5vw, 1.1rem)
-  margin-bottom: 8px
-  display: -webkit-box
-  -webkit-line-clamp: 3
-  -webkit-box-orient: vertical
-  overflow: hidden
+  .katex-display
+    overflow-x: auto
+    padding: 8px 0
 
-// Abstract
-.bento-abstract
-  font-family: $fuente-principal
-  font-size: 0.95rem
-  line-height: 1.55
-  color: rgba(255,255,255,0.85)
-  margin: 0 0 16px
-  display: -webkit-box
-  -webkit-line-clamp: 3
-  -webkit-box-orient: vertical
-  overflow: hidden
+  // ::: tip | info | warning | danger
+  .admonition
+    margin: 16px 0
+    padding: 12px 16px
+    border-radius: 8px
+    border-left: 4px solid
+    p:last-child
+      margin-bottom: 0
+    .admonition-title
+      font-weight: 700
+      font-size: 0.8rem
+      letter-spacing: 0.08em
+      text-transform: uppercase
+      margin-bottom: 6px
+  .admonition-tip
+    border-color: $primary
+    background: rgba(var(--v-theme-primary), 0.08)
+    .admonition-title
+      color: $primary
+  .admonition-info
+    border-color: #64B5F6
+    background: rgba(100, 181, 246, 0.08)
+    .admonition-title
+      color: #64B5F6
+  .admonition-warning
+    border-color: #FFD54F
+    background: rgba(255, 213, 79, 0.08)
+    .admonition-title
+      color: #FFD54F
+  .admonition-danger
+    border-color: #FF6E6E
+    background: rgba(255, 110, 110, 0.08)
+    .admonition-title
+      color: #FF6E6E
 
-.bento-abstract-sm
-  font-size: 0.85rem
-  -webkit-line-clamp: 2
-  margin-bottom: 12px
-
-// Meta
-.bento-meta
-  display: flex
-  align-items: center
-  gap: 8px
-  font-family: $fuente-principal
-  font-size: 0.8rem
-  color: rgba(255,255,255,0.7)
-  flex-wrap: wrap
-
-.bento-author
-  font-weight: 600
-  color: rgba(255,255,255,0.9)
-
-.bento-date
-  color: rgba(255,255,255,0.7)
-
-.meta-dot
-  color: $blog-accent
-  font-weight: bold
-
-// Grid placement - Desktop
-.bento-hero
-  grid-column: 1 / 3
-  grid-row: 1 / 3
-  min-height: 420px
-
-.bento-medium-1
-  grid-column: 3 / 4
-  grid-row: 1 / 2
-  min-height: 200px
-
-.bento-small-1
-  grid-column: 4 / 5
-  grid-row: 1 / 2
-  min-height: 200px
-
-.bento-wide
-  grid-column: 3 / 5
-  grid-row: 2 / 3
-  min-height: 220px
-
-.bento-medium-2
-  grid-column: 1 / 3
-  grid-row: 3 / 4
-  min-height: 280px
-
-.bento-small-2
-  grid-column: 3 / 5
-  grid-row: 3 / 4
-  min-height: 280px
-
-// Responsive - Tablet
-@media screen and (max-width: 1024px)
-  .bento-grid
-    grid-template-columns: repeat(2, 1fr)
-    grid-template-rows: auto
-    gap: 16px
-  
-  .bento-hero
-    grid-column: 1 / 3
-    grid-row: 1 / 2
-    min-height: 350px
-  
-  .bento-medium-1
-    grid-column: 1 / 2
-    grid-row: 2 / 3
-    min-height: 280px
-  
-  .bento-small-1
-    grid-column: 2 / 3
-    grid-row: 2 / 3
-    min-height: 280px
-  
-  .bento-wide
-    grid-column: 1 / 3
-    grid-row: 3 / 4
-    min-height: 250px
-  
-  .bento-medium-2
-    grid-column: 1 / 2
-    grid-row: 4 / 5
-    min-height: 280px
-  
-  .bento-small-2
-    grid-column: 2 / 3
-    grid-row: 4 / 5
-    min-height: 280px
-
-// Responsive - Mobile
-@media screen and (max-width: 600px)
-  .bento-grid
-    grid-template-columns: 1fr
-    padding: 24px 16px 40px
-    gap: 16px
-  
-  .bento-hero,
-  .bento-medium-1,
-  .bento-small-1,
-  .bento-wide,
-  .bento-medium-2,
-  .bento-small-2
-    grid-column: 1 / 2
-    grid-row: auto
-    min-height: 280px
-  
-  .bento-hero
-    min-height: 350px
-  
-  .bento-overlay
-    padding: 20px
-  
-  .bento-title-lg
-    font-size: 1.4rem
-  
-  .bento-title-md
-    font-size: 1.1rem
-  
-  .bento-abstract
-    -webkit-line-clamp: 2
-    font-size: 0.9rem
-  
-  .blog-masthead
-    padding: 32px 16px 24px
-  
-  .masthead-title
-    font-size: 1.8rem
-
-
+  details.admonition-details
+    margin: 16px 0
+    padding: 12px 16px
+    border-radius: 8px
+    background: rgba($on-surface, 0.04)
+    summary
+      cursor: pointer
+      font-weight: 700

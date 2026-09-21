@@ -1,22 +1,25 @@
 <script setup lang="ts">
-import { articles } from '@/stores/ui'
-import timeformat from '@/utils/dateparser'
-import siteTexts from '@/database/site-texts.json'
+import { useHead } from '@unhead/vue';
+import { posts } from '@/stores/ui';
+import { formatDate } from '@/utils/dateparser';
+import { siteConfig } from '@/site.config';
 
-const slogan = siteTexts.slogans[Math.floor(Math.random() * siteTexts.slogans.length)]
+useHead({ title: null });
+
+const slogan = siteConfig.slogans[Math.floor(Math.random() * siteConfig.slogans.length)];
 
 // Posición de cada tarjeta en el bento grid; el primero (más reciente) es el hero.
-const layouts = ['bento-hero', 'bento-medium-1', 'bento-small-1', 'bento-wide', 'bento-medium-2', 'bento-small-2']
-const titleSizes = ['bento-title-lg', 'bento-title-md', 'bento-title-sm', 'bento-title-md', 'bento-title-md', 'bento-title-sm']
-const overlays = ['bento-overlay-dark', '', '', 'bento-overlay-gradient', '', '']
+const layouts = ['bento-hero', 'bento-medium-1', 'bento-small-1', 'bento-wide', 'bento-medium-2', 'bento-small-2'];
+const titleSizes = ['bento-title-lg', 'bento-title-md', 'bento-title-sm', 'bento-title-md', 'bento-title-md', 'bento-title-sm'];
+const overlays = ['bento-overlay-dark', '', '', 'bento-overlay-gradient', '', ''];
 
-const featured = articles.slice(0, layouts.length).map((article, i) => ({
+const featured = posts.slice(0, Math.min(siteConfig.home.featured, layouts.length)).map((article, i) => ({
   ...article,
   layout: layouts[i],
   titleSize: titleSizes[i],
   overlay: overlays[i],
-  dateLabel: timeformat().format(new Date(article.metadata.date)),
-}))
+  dateLabel: formatDate(article.date),
+}));
 </script>
 
 <template>
@@ -29,21 +32,22 @@ const featured = articles.slice(0, layouts.length).map((article, i) => ({
 
     <!-- Bento Grid Layout -->
     <section class="bento-grid">
-      <router-link v-for="(article, i) in featured" :key="article.slug" :to="article.slug"
+      <router-link v-for="(article, i) in featured" :key="article.url" :to="article.url"
         class="bento-card" :class="article.layout">
         <div class="bento-image-wrapper">
-          <v-img :src="article.metadata.image" :alt="article.metadata.title" class="bento-image" cover
+          <v-img :src="article.image" :srcset="article.imageSrcset" :alt="article.title" class="bento-image" cover
+            :sizes="i === 0 ? '(max-width: 1024px) 100vw, 60vw' : '(max-width: 640px) 100vw, 40vw'"
             :eager="i === 0" />
         </div>
         <div class="bento-overlay" :class="article.overlay">
           <div class="bento-tags">
-            <span class="bento-category">{{ article.metadata.category }}</span>
+            <span v-if="article.category" class="bento-category">{{ article.category }}</span>
           </div>
           <component :is="i === 0 ? 'h2' : 'h3'" class="bento-title" :class="article.titleSize">
-            {{ article.metadata.title }}
+            {{ article.title }}
           </component>
           <div class="bento-meta">
-            <span class="bento-author">{{ article.metadata.author }}</span>
+            <span class="bento-author">{{ article.author }}</span>
             <span class="meta-dot">•</span>
             <span class="bento-date">{{ article.dateLabel }}</span>
           </div>
@@ -144,7 +148,7 @@ background-image: linear-gradient(
   text-decoration: none;
   color: inherit;
   display: block;
-  background: rgba(30, 30, 30, 0.6);
+  background: rgb(var(--v-theme-surface));
   transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94),
     box-shadow 0.35s ease;
 }

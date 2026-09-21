@@ -1,11 +1,15 @@
 <script lang="ts" setup>
-import { useUiStore, availableCategories, type AdvancedSearchOptions } from '../../stores/ui';
+import { useUiStore, availableCategories, type AdvancedSearchOptions, type SearchField } from '@/stores/ui';
 import { useRouter } from 'vue-router';
 import { computed, ref } from 'vue';
-import siteTexts from '@/database/site-texts.json';
+import { useTexts } from '@/utils/i18n';
+import { useHead } from '@unhead/vue';
 
 const ui = useUiStore();
+const texts = useTexts();
+ui.ensureSearchIndex();
 const router = useRouter();
+useHead({ title: texts.advancedSearch });
 
 // Show/hide advanced options panel
 const showAdvanced = ref(true); // Start open since no query yet
@@ -18,7 +22,7 @@ function handleSearch() {
 }
 
 // Toggle field in search fields array
-function toggleSearchField(field: 'title' | 'tags' | 'abstract' | 'category' | 'author') {
+function toggleSearchField(field: SearchField) {
   const fields = [...ui.advancedOptions.searchFields];
   const idx = fields.indexOf(field);
   if (idx > -1) {
@@ -45,7 +49,8 @@ const fieldLabels: Record<string, string> = {
   tags: 'Tags',
   abstract: 'Resumen',
   category: 'Categoría',
-  author: 'Autor'
+  author: 'Autor',
+  body: 'Contenido'
 };
 
 // Fuzzy level labels
@@ -73,13 +78,13 @@ const suggestions = computed(() => {
   <div class="search-page">
     <!-- Search Header -->
     <div class="search-header">
-      <h1 class="search-page-title">{{ siteTexts.advancedSearch || 'Búsqueda Avanzada' }}</h1>
+      <h1 class="search-page-title">{{ texts.advancedSearch }}</h1>
       <p class="search-subtitle">Encuentra artículos, tutoriales y más en nuestro archivo</p>
       
       <div class="search-input-wrapper">
         <v-text-field
           v-model="ui.search"
-          :placeholder="siteTexts.searchPlaceholder"
+          :placeholder="texts.searchPlaceholder"
           variant="outlined"
           density="comfortable"
           hide-details
@@ -260,11 +265,11 @@ const suggestions = computed(() => {
 </template>
 
 <style lang="sass" scoped>
-$search-bg: #1a1a1a
-$search-surface: #242424
-$search-accent: #3a7569
-$search-text: #f0f0f0
-$search-text-muted: #a0a0a0
+$search-bg: rgb(var(--v-theme-background))
+$search-surface: rgb(var(--v-theme-surface))
+$search-accent: rgb(var(--v-theme-primary))
+$search-text: rgb(var(--v-theme-on-surface))
+$search-text-muted: rgba(var(--v-theme-on-surface), 0.6)
 
 .search-page
   background: $search-bg
@@ -333,7 +338,7 @@ $search-text-muted: #a0a0a0
   margin: 0 auto 32px
   background: $search-surface
   border-radius: 12px
-  border: 1px solid rgba(255,255,255,0.08)
+  border: 1px solid rgba(var(--v-theme-on-surface), 0.08)
 
 .advanced-panel-content
   padding: 24px
@@ -388,7 +393,7 @@ $search-text-muted: #a0a0a0
 .reset-row
   display: flex
   justify-content: flex-end
-  border-top: 1px solid rgba(255,255,255,0.08)
+  border-top: 1px solid rgba(var(--v-theme-on-surface), 0.08)
   padding-top: 16px
   margin-top: 8px
 

@@ -30,6 +30,13 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
+    '/[page]': RouteRecordInfo<
+      '/[page]',
+      '/:page',
+      { page: ParamValue<true> },
+      { page: ParamValue<false> },
+      | never
+    >,
     '/[...path]': RouteRecordInfo<
       '/[...path]',
       '/:path(.*)',
@@ -44,6 +51,34 @@ declare module 'vue-router/auto-routes' {
       { year: ParamValue<false>, slug: ParamValue<false> },
       | never
     >,
+    '/categories/': RouteRecordInfo<
+      '/categories/',
+      '/categories',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/categories/[category]': RouteRecordInfo<
+      '/categories/[category]',
+      '/categories/:category',
+      { category: ParamValue<true> },
+      { category: ParamValue<false> },
+      | never
+    >,
+    '/docs/': RouteRecordInfo<
+      '/docs/',
+      '/docs',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/docs/[...path]': RouteRecordInfo<
+      '/docs/[...path]',
+      '/docs/:path(.*)',
+      { path: ParamValue<true> },
+      { path: ParamValue<false> },
+      | never
+    >,
     '/search/': RouteRecordInfo<
       '/search/',
       '/search',
@@ -56,6 +91,20 @@ declare module 'vue-router/auto-routes' {
       '/search/:query',
       { query: ParamValue<true> },
       { query: ParamValue<false> },
+      | never
+    >,
+    '/tags/': RouteRecordInfo<
+      '/tags/',
+      '/tags',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/tags/[tag]': RouteRecordInfo<
+      '/tags/[tag]',
+      '/tags/:tag',
+      { tag: ParamValue<true> },
+      { tag: ParamValue<false> },
       | never
     >,
   }
@@ -77,6 +126,12 @@ declare module 'vue-router/auto-routes' {
       views:
         | never
     }
+    'src/pages/[page].vue': {
+      routes:
+        | '/[page]'
+      views:
+        | never
+    }
     'src/pages/[...path].vue': {
       routes:
         | '/[...path]'
@@ -89,6 +144,30 @@ declare module 'vue-router/auto-routes' {
       views:
         | never
     }
+    'src/pages/categories/index.vue': {
+      routes:
+        | '/categories/'
+      views:
+        | never
+    }
+    'src/pages/categories/[category].vue': {
+      routes:
+        | '/categories/[category]'
+      views:
+        | never
+    }
+    'src/pages/docs/index.vue': {
+      routes:
+        | '/docs/'
+      views:
+        | never
+    }
+    'src/pages/docs/[...path].vue': {
+      routes:
+        | '/docs/[...path]'
+      views:
+        | never
+    }
     'src/pages/search/index.vue': {
       routes:
         | '/search/'
@@ -98,6 +177,18 @@ declare module 'vue-router/auto-routes' {
     'src/pages/search/[query].vue': {
       routes:
         | '/search/[query]'
+      views:
+        | never
+    }
+    'src/pages/tags/index.vue': {
+      routes:
+        | '/tags/'
+      views:
+        | never
+    }
+    'src/pages/tags/[tag].vue': {
+      routes:
+        | '/tags/[tag]'
       views:
         | never
     }

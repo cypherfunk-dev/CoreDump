@@ -1,49 +1,48 @@
 /**
  * main.ts
  *
- * Bootstraps Vuetify and other plugins then mounts the App`
+ * vite-ssg: en `npm run dev` funciona como SPA normal; en `npm run build`
+ * prerenderiza cada ruta a HTML estático (SEO sin servidor).
  */
+import { ViteSSG } from 'vite-ssg';
+import { createPinia } from 'pinia';
+import { routes } from 'vue-router/auto-routes';
+import type { RouteRecordRaw } from 'vue-router';
 
-// Plugins
-import { registerPlugins } from "@/plugins";
-
-// Components
-import App from "./App.vue";
-
-// Composables
-import { createApp } from "vue";
+import App from './App.vue';
+import { registerPlugins } from '@/plugins';
 
 // Styles
-import "unfonts.css";
-import "@fontsource-variable/inter";
-import "@fontsource-variable/montserrat";
-import "@/styles/markdown-view.sass";
+import 'unfonts.css';
+import '@fontsource-variable/inter';
+import '@fontsource-variable/montserrat';
+import 'katex/dist/katex.min.css';
+import '@/styles/markdown-view.sass';
 
-// Stores
-import { createPinia } from "pinia";
-
-// Router
-import {
-  createRouter,
-  createWebHistory,
-  type RouteRecordRaw,
-} from "vue-router";
-
-import { routes as generatedRoutes } from "vue-router/auto-routes";
-const routes = generatedRoutes as unknown as RouteRecordRaw[];
-
-const router = createRouter({
-  history: createWebHistory(),
-  routes,
-  scrollBehavior() {
-    return { top: 0, behavior: "smooth" };
+export const createApp = ViteSSG(
+  App,
+  {
+    routes: routes as unknown as RouteRecordRaw[],
+    scrollBehavior(to, _from, savedPosition) {
+      if (savedPosition) return savedPosition;
+      if (to.hash) return { el: to.hash, top: 80, behavior: 'smooth' };
+      return { top: 0 };
+    },
   },
-});
+  ({ app, initialState, isClient }) => {
+    const pinia = createPinia();
+    app.use(pinia);
+    registerPlugins(app);
 
-const app = createApp(App);
-const pinia = createPinia();
-app.use(pinia);
-app.use(router);
-registerPlugins(app);
-
-app.mount("#app");
+    // Estado de Pinia serializado en el HTML prerenderizado y restaurado en cliente
+    if (isClient) {
+      pinia.state.value = initialState.pinia ?? {};
+      import('virtual:pwa-register').then(({ registerSW }) => registerSW({ immediate: true }));
+    } else {
+      initialState.pinia = pinia.state.value;
+    }
+  },
+  {
+    rootContainer: '#app',
+  },
+);

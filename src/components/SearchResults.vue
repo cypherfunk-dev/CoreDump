@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { useUiStore } from '../stores/ui';
-import siteTexts from '../database/site-texts.json';
+import { useTexts } from '@/utils/i18n';
 import { ref, watch, nextTick } from 'vue';
-import dateParser from '../utils/dateparser';
+import { formatDate } from '@/utils/dateparser';
+const texts = useTexts();
 const ui = useUiStore();
 const searchField = ref<{ focus: () => void } | null>(null);
 
@@ -17,20 +18,19 @@ watch(() => ui.searchbar, (open) => {
         <v-card>
             <v-card-title>
                 <v-text-field ref="searchField" v-model="ui.search" density="compact"
-                    :placeholder="siteTexts.searchPlaceholder" variant="solo-filled" flat single-line hide-details
+                    :placeholder="texts.searchPlaceholder" variant="solo-filled" flat single-line hide-details
                     autofocus />
             </v-card-title>
         </v-card>
 
         <div v-if="ui.results.length" class="overflow-y-auto" style="max-height: 70vh; padding: 16px 0;">
-            <v-container v-for="result in ui.results" :key="result.slug" class="mt-0">
-                <v-card :title="result['metadata.title']"
-                    :subtitle="dateParser().format(new Date(result['metadata.date']))">
+            <v-container v-for="result in ui.results" :key="result.url" class="mt-0">
+                <v-card :title="result.title" :subtitle="formatDate(result.date)">
                     <v-card-text>
-                        {{ result['metadata.abstract'] }}
+                        {{ result.abstract }}
                     </v-card-text>
                     <v-card-actions>
-                        <v-btn :to="result.slug" @click="ui.searchbar = false">{{ siteTexts.readMore }}</v-btn>
+                        <v-btn :to="result.url" @click="ui.searchbar = false">{{ texts.readMore }}</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-container>

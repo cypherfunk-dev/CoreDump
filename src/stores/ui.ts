@@ -1,73 +1,50 @@
 import { defineStore } from 'pinia';
-import database from '../database/db.json';
-import MiniSearch, { type SearchOptions } from 'minisearch';
+import MiniSearch, { type SearchOptions, type SearchResult } from 'minisearch';
+import { entries, docsTree } from 'virtual:content';
+import type { ContentMeta, DocNode } from '@/content/types';
+import { searchOptions, removeAccents, type SearchDoc } from '@/content/search-options';
 
-export interface Article {
-  id: string;
-  slug: string;
-  metadata: {
-    title: string;
-    date: string;
-    category?: string;
-    tags?: string;
-    author?: string;
-    abstract?: string;
-    image?: string;
-  };
+// ── Contenido (generado en build por build/plugin.ts) ───────────────────────
+
+/** Todo el contenido, del más reciente al más antiguo. */
+export const allContent: ContentMeta[] = entries;
+/** Solo posts (blog): portada, sidebar, RSS. */
+export const posts: ContentMeta[] = entries.filter(e => e.kind === 'post');
+/** Solo docs, ordenados por sección/orden (mismo orden que el árbol). */
+export const docs: ContentMeta[] = flattenTree(docsTree)
+  .map(url => entries.find(e => e.url === url)!)
+  .filter(Boolean);
+export const docsNav: DocNode[] = docsTree;
+/** Páginas sueltas (about, contacto…) */
+export const pages: ContentMeta[] = entries.filter(e => e.kind === 'page');
+
+export const findByUrl = (url: string) => allContent.find(a => a.url === url);
+
+function flattenTree(nodes: DocNode[]): string[] {
+  return nodes.flatMap(n => [...(n.url ? [n.url] : []), ...flattenTree(n.children)]);
 }
 
-// Artículos ordenados del más reciente al más antiguo (fuente única para
-// portada, sidebar y página de artículo).
-export const articles: Article[] = [...(database as Article[])].sort(
-  (a, b) => new Date(b.metadata.date).getTime() - new Date(a.metadata.date).getTime()
-);
-
-export const findArticle = (slug: string) => articles.find(a => a.slug === slug);
-
-// Tags únicos ordenados por frecuencia (para la nube de tags del sidebar).
-export const popularTags: string[] = (() => {
+const countBy = (pick: (m: ContentMeta) => string[]) => {
   const count = new Map<string, number>();
-  for (const a of articles) {
-    for (const tag of (a.metadata.tags ?? '').split(',')) {
-      const t = tag.trim();
-      if (t) count.set(t, (count.get(t) ?? 0) + 1);
-    }
-  }
-  return [...count.entries()].sort((a, b) => b[1] - a[1]).map(([t]) => t);
-})();
+  for (const m of allContent) if (m.kind !== 'page') for (const k of pick(m)) count.set(k, (count.get(k) ?? 0) + 1);
+  return [...count.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+};
 
-const accessNested = (obj: any, path: string) => {
-  return path.split('.').reduce((doc, key) => {
-    const intKey = parseInt(key, 10);
-    return doc && doc[isNaN(intKey) ? key : intKey];
-  }, obj);
-}
+/** [tag, cantidad] ordenados por frecuencia */
+export const tagCounts = countBy(m => m.tags);
+export const popularTags = tagCounts.map(([t]) => t);
+/** [categoría, cantidad] ordenados por frecuencia */
+export const categoryCounts = countBy(m => (m.category ? [m.category] : []));
+export const availableCategories = categoryCounts.map(([c]) => c);
 
-const removeAccents = (str: string) => {
-  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-}
+// ── Búsqueda ────────────────────────────────────────────────────────────────
 
-// Create MiniSearch instance once
-const miniSearch = new MiniSearch({
-  idField: 'id',
-  extractField: (doc, fieldName) => accessNested(doc, fieldName),
-  fields: ['metadata.title', 'metadata.tags', 'metadata.abstract', 'metadata.category', 'metadata.date', 'metadata.author'],
-  storeFields: ['id', 'slug', 'metadata.title', 'metadata.tags', 'metadata.abstract', 'metadata.date', 'metadata.category', 'metadata.author'],
-  // Custom tokenizer to handle special characters
-  tokenize: (text) => text.toLowerCase().split(/[\s\-_.,;:!?()[\]{}'"]+/).filter(t => t.length > 1),
-  processTerm: (term) => removeAccents(term.toLowerCase())
-});
-miniSearch.addAll(database);
+export type SearchField = 'title' | 'tags' | 'abstract' | 'category' | 'author' | 'body';
+export type SearchHit = SearchResult & Omit<SearchDoc, 'body'>;
 
-// Extract unique categories from database
-export const availableCategories = [...new Set(
-  database.map((doc: any) => doc.metadata?.category).filter(Boolean)
-)] as string[];
-
-// Search options interface
 export interface AdvancedSearchOptions {
   fuzzyLevel: 'exact' | 'normal' | 'aggressive';
-  searchFields: ('title' | 'tags' | 'abstract' | 'category' | 'author')[];
+  searchFields: SearchField[];
   categoryFilter: string | null;
   sortBy: 'relevance' | 'date-desc' | 'date-asc' | 'title';
   prefixSearch: boolean;
@@ -76,12 +53,20 @@ export interface AdvancedSearchOptions {
 
 export const defaultSearchOptions: AdvancedSearchOptions = {
   fuzzyLevel: 'normal',
-  searchFields: ['title', 'tags', 'abstract', 'category', 'author'],
+  searchFields: ['title', 'tags', 'abstract', 'category', 'author', 'body'],
   categoryFilter: null,
   sortBy: 'relevance',
   prefixSearch: true,
-  combineWith: 'OR'
+  combineWith: 'OR',
 };
+
+const FIELD_BOOST: Record<SearchField, number> = { title: 3, tags: 2, category: 1.5, abstract: 1, author: 1, body: 0.5 };
+const FUZZY: Record<AdvancedSearchOptions['fuzzyLevel'], number | false> = { exact: false, normal: 0.2, aggressive: 0.4 };
+
+// El índice (con el cuerpo de todos los artículos) se carga bajo demanda la
+// primera vez que se busca; hasta entonces `results` está vacío.
+let miniSearch: MiniSearch<SearchDoc> | null = null;
+let loading: Promise<void> | null = null;
 
 export const useUiStore = defineStore('ui', {
   state: () => ({
@@ -89,24 +74,34 @@ export const useUiStore = defineStore('ui', {
     search: '',
     sidebar: true,
     loading: false,
-    advancedOptions: { ...defaultSearchOptions } as AdvancedSearchOptions
+    searchReady: false,
+    advancedOptions: { ...defaultSearchOptions } as AdvancedSearchOptions,
   }),
   getters: {
-    // Resultados de la búsqueda simple (navbar/modal). Al ser un getter se
-    // cachea y solo se recalcula cuando cambia `search`.
-    results: (state) => {
+    /** Resultados de la búsqueda simple (navbar/modal). */
+    results(state): SearchHit[] {
       const val = state.search.trim();
-      if (!val) return [];
+      if (!val || !state.searchReady || !miniSearch) return [];
       return miniSearch.search(removeAccents(val), {
         prefix: true,
         fuzzy: 0.2,
-        boost: { 'metadata.title': 2, 'metadata.tags': 1.5 }
-      });
-    }
+        boost: FIELD_BOOST,
+      }) as SearchHit[];
+    },
   },
   actions: {
+    /** Carga el índice serializado (un chunk aparte) una sola vez. */
+    async ensureSearchIndex() {
+      if (this.searchReady) return;
+      loading ??= import('virtual:content/search').then(({ default: json }) => {
+        miniSearch = MiniSearch.loadJSON<SearchDoc>(json, searchOptions);
+        this.searchReady = true;
+      });
+      await loading;
+    },
     toggleSearch() {
       this.searchbar = !this.searchbar;
+      if (this.searchbar) this.ensureSearchIndex();
     },
     onClickOutside() {
       if (this.searchbar) this.searchbar = false;
@@ -123,81 +118,43 @@ export const useUiStore = defineStore('ui', {
     updateSearchOption<K extends keyof AdvancedSearchOptions>(key: K, value: AdvancedSearchOptions[K]) {
       this.advancedOptions[key] = value;
     },
-    
-    // Advanced search with options
-    advancedSearch(val: string, options?: Partial<AdvancedSearchOptions>) {
+
+    /** Búsqueda avanzada (página /search). */
+    advancedSearch(val: string, options?: Partial<AdvancedSearchOptions>): SearchHit[] {
       this.search = val;
-      if (!val || val.trim() === '') return [];
-      
+      if (!val.trim() || !this.searchReady || !miniSearch) return [];
+
       const opts = { ...this.advancedOptions, ...options };
-      
-      // Map fuzzy levels to numeric values
-      const fuzzyMap = {
-        'exact': false as const,
-        'normal': 0.2,
-        'aggressive': 0.4
-      };
-      
-      // Map search fields to MiniSearch field names
-      const fieldMap: Record<AdvancedSearchOptions['searchFields'][number], string> = {
-        'title': 'metadata.title',
-        'tags': 'metadata.tags',
-        'abstract': 'metadata.abstract',
-        'category': 'metadata.category',
-        'author': 'metadata.author'
-      };
-      
-      // Build boost object based on selected fields
       const boost: Record<string, number> = {};
-      for (const field of opts.searchFields) {
-        boost[fieldMap[field]] = field === 'title' ? 2 : field === 'tags' ? 1.5 : 1;
-      }
-      
-      // Build search options
-      const searchOptions: SearchOptions = {
+      for (const field of opts.searchFields) boost[field] = FIELD_BOOST[field];
+
+      const searchOpts: SearchOptions = {
         prefix: opts.prefixSearch,
-        fuzzy: fuzzyMap[opts.fuzzyLevel],
+        fuzzy: FUZZY[opts.fuzzyLevel],
         boost,
         combineWith: opts.combineWith,
-        // Only search in selected fields
-        fields: opts.searchFields.map(f => fieldMap[f])
+        fields: opts.searchFields,
       };
-      
-      let results = miniSearch.search(removeAccents(val), searchOptions);
-      
-      // Apply category filter
-      if (opts.categoryFilter) {
-        results = results.filter(r => r['metadata.category'] === opts.categoryFilter);
-      }
-      
-      // Apply sorting
+
+      let results = miniSearch.search(removeAccents(val), searchOpts) as SearchHit[];
+      if (opts.categoryFilter) results = results.filter(r => r.category === opts.categoryFilter);
+
       switch (opts.sortBy) {
-        case 'date-desc':
-          results.sort((a, b) => new Date(b['metadata.date']).getTime() - new Date(a['metadata.date']).getTime());
-          break;
-        case 'date-asc':
-          results.sort((a, b) => new Date(a['metadata.date']).getTime() - new Date(b['metadata.date']).getTime());
-          break;
-        case 'title':
-          results.sort((a, b) => (a['metadata.title'] || '').localeCompare(b['metadata.title'] || ''));
-          break;
-        // 'relevance' is default from MiniSearch, no re-sort needed
+        case 'date-desc': results.sort((a, b) => b.date.localeCompare(a.date)); break;
+        case 'date-asc': results.sort((a, b) => a.date.localeCompare(b.date)); break;
+        case 'title': results.sort((a, b) => a.title.localeCompare(b.title)); break;
       }
-      
       return results;
     },
-    
-    // Auto-suggest for search input
+
     getSuggestions(val: string, limit = 5) {
-      if (!val || val.trim().length < 2) return [];
-      
-      const suggestions = miniSearch.autoSuggest(removeAccents(val), {
+      if (val.trim().length < 2 || !this.searchReady || !miniSearch) return [];
+      return miniSearch.autoSuggest(removeAccents(val), {
         prefix: true,
         fuzzy: 0.2,
-        boost: { 'metadata.title': 3 }
-      });
-      
-      return suggestions.slice(0, limit);
-    }
-  }
+        boost: { title: 3 },
+        fields: ['title', 'tags', 'category'],
+      }).slice(0, limit);
+    },
+  },
 });

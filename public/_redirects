@@ -1,1 +1,3 @@
-/* /index.html   200
+# Netlify. El sitio está prerenderizado: solo la búsqueda es dinámica.
+/search/*   /search/index.html   200
+/*          /404.html            404
