@@ -1,9 +1,7 @@
-name: CoreDump trigger
+name: Deploy (Docker, self-hosted)
 
 on:
   push:
-    branches: ["main"]
-  pull_request:
     branches: ["main"]
 
 jobs:
